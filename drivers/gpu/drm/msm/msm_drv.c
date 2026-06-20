@@ -703,17 +703,37 @@ static int msm_ioctl_get_param(struct drm_device *dev, void *data,
 	struct drm_msm_param *args = data;
 	struct msm_gpu *gpu;
 
-	/* for now, we just have 3d pipe.. eventually this would need to
-	 * be more clever to dispatch to appropriate gpu module:
-	 */
 	if (args->pipe != MSM_PIPE_3D0)
 		return -EINVAL;
 
 	gpu = priv->gpu;
 
-	if (!gpu)
-		return -ENXIO;
 
+	if (!gpu) {
+		switch (args->param) {
+		case MSM_PARAM_GPU_ID:
+			args->value = 619; /* Adreno 619 (Poco X4 Pro) */
+			return 0;
+		case MSM_PARAM_CHIP_ID:
+			args->value = 0x06010900; // indeficator
+			return 0;
+		case MSM_PARAM_MAX_FREQ:
+			args->value = 840000000; /* 840 MHz */
+			return 0;
+		case MSM_PARAM_TIMESTAMP:
+			args->value = 0;
+			return 0;
+		case MSM_PARAM_PP_PGTABLE:
+			args->value = 0; /* Отключаем per-process пагинацию для стаба */
+			return 0;
+		default:
+			// other
+			args->value = 0;
+			return 0;
+		}
+	}
+
+	// original
 	return gpu->funcs->get_param(gpu, args->param, &args->value);
 }
 
