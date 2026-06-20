@@ -3091,8 +3091,8 @@ static void sde_encoder_underrun_callback(struct drm_encoder *drm_enc,
 	trace_sde_encoder_underrun(DRMID(drm_enc),
 		atomic_read(&phy_enc->underrun_cnt));
 
-	SDE_DBG_CTRL("stop_ftrace");
-	SDE_DBG_CTRL("panic_underrun");
+	//SDE_DBG_CTRL("stop_ftrace");
+	//SDE_DBG_CTRL("panic_underrun");
 
 	SDE_ATRACE_END("encoder_underrun_callback");
 }
@@ -3176,7 +3176,11 @@ static void sde_encoder_frame_done_callback(
 				sde_enc->cur_master->connector;
 	if (sde_encoder_check_curr_mode(drm_enc, MSM_DISPLAY_CMD_MODE))
 		is_cmd_mode = true;
-
+		
+	if (event & SDE_ENCODER_FRAME_EVENT_PANEL_DEAD) {
+        event &= ~SDE_ENCODER_FRAME_EVENT_PANEL_DEAD;
+        event |= SDE_ENCODER_FRAME_EVENT_DONE; // Притворяемся, что всё прошло успешно
+    }
 	if (event & (SDE_ENCODER_FRAME_EVENT_DONE
 			| SDE_ENCODER_FRAME_EVENT_ERROR
 			| SDE_ENCODER_FRAME_EVENT_PANEL_DEAD) && is_cmd_mode) {

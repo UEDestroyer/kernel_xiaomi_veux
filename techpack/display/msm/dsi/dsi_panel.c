@@ -3419,8 +3419,7 @@ static int dsi_panel_parse_esd_config(struct dsi_panel *panel)
 		return 0;
 	}
 
-	esd_config->esd_enabled = utils->read_bool(utils->data,
-		"qcom,esd-check-enabled");
+	esd_config->esd_enabled = false;
 
 	if (!esd_config->esd_enabled)
 		return 0;

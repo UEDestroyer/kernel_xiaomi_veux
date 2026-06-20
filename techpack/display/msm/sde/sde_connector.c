@@ -2468,6 +2468,7 @@ static int sde_connector_atomic_check(struct drm_connector *connector,
 void _sde_connector_report_panel_dead(struct sde_connector *conn,
 				      bool skip_pre_kickoff)
 {
+	pr_err("a mne pohui chto tam core schitaet");return;
 	struct drm_event event;
 
 	if (!conn)
@@ -2671,11 +2672,10 @@ static int sde_connector_populate_mode_info(struct drm_connector *conn,
 		sde_kms_info_add_keyint(info, "allowed_mode_switch",
 			mode_info.allowed_mode_switches);
 
-		if (!mode_info.roi_caps.num_roi)
-			continue;
-
-		sde_kms_info_add_keyint(info, "partial_update_num_roi",
-			mode_info.roi_caps.num_roi);
+		mode_info.roi_caps.num_roi = 0; 
+        
+        // Опционально: оставляем только базовые параметры, если драйвер их требует для метаданных
+        sde_kms_info_add_keyint(info, "partial_update_num_roi", 0);
 		sde_kms_info_add_keyint(info, "partial_update_xstart",
 			mode_info.roi_caps.align.xstart_pix_align);
 		sde_kms_info_add_keyint(info, "partial_update_walign",

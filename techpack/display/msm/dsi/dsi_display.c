@@ -833,6 +833,9 @@ static int dsi_display_status_check_te(struct dsi_display *display,
 int dsi_display_check_status(struct drm_connector *connector, void *display,
 					bool te_check_override)
 {
+    pr_err("+[VEBIAN MSM] FAKE CHECK");
+	return 1;
+	
 	struct dsi_display *dsi_display = display;
 	struct dsi_panel *panel;
 	u32 status_mode;
@@ -6115,6 +6118,8 @@ int dsi_display_dev_probe(struct platform_device *pdev)
 	int rc = 0, index = DSI_PRIMARY;
 	bool firm_req = false;
 	struct dsi_display_boot_param *boot_disp;
+
+	pr_err("+[VEBIAN] dsi_display_probe started ");
 
 	if (!pdev || !pdev->dev.of_node) {
 		DSI_ERR("pdev not found\n");
