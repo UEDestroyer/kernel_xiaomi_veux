@@ -922,43 +922,38 @@ static int dpu_crtc_atomic_check(struct drm_crtc *crtc,
 		}
 	}
 
-	z_pos = -1;
-	for (i = 0; i < cnt; i++) {
-		/* reset counts at every new blend stage */
-		if (pstates[i].stage != z_pos) {
-			left_zpos_cnt = 0;
-			right_zpos_cnt = 0;
-			z_pos = pstates[i].stage;
-		}
+    int max_stages = DPU_STAGE_MAX - DPU_STAGE_0;
+    int total_planes = cnt;
 
-		/* verify z_pos setting before using it */
-		if (z_pos >= DPU_STAGE_MAX - DPU_STAGE_0) {
-			DPU_ERROR("> %d plane stages assigned\n",
-					DPU_STAGE_MAX - DPU_STAGE_0);
-			rc = -EINVAL;
-			goto end;
-		} else if (pstates[i].drm_pstate->crtc_x < mixer_width) {
-			if (left_zpos_cnt == 2) {
-				DPU_ERROR("> 2 planes @ stage %d on left\n",
-					z_pos);
-				rc = -EINVAL;
-				goto end;
-			}
-			left_zpos_cnt++;
+    for (i = 0; i < total_planes; i++) {
+        int target_stage;
 
-		} else {
-			if (right_zpos_cnt == 2) {
-				DPU_ERROR("> 2 planes @ stage %d on right\n",
-					z_pos);
-				rc = -EINVAL;
-				goto end;
-			}
-			right_zpos_cnt++;
-		}
+        if (total_planes <= max_stages) {
+            // skip if layers not many
+            target_stage = pstates[i].drm_pstate->normalized_zpos;
+            if (target_stage >= max_stages)
+                target_stage = max_stages - 1;
+        } else {
+            // get half of max from vector::start and vector::end
+            int half = max_stages / 2;
+            if (i < half) {
+                // get from vector:start
+                target_stage = i;
+            } else if (i >= total_planes - half) {
+                // vector::end to top
+                target_stage = max_stages - (total_planes - i);
+            } else {
+                // too many delete
+                target_stage = half;
+            }
+        }
 
-		pstates[i].dpu_pstate->stage = z_pos + DPU_STAGE_0;
-		DPU_DEBUG("%s: zpos %d", dpu_crtc->name, z_pos);
-	}
+        // use converted stage
+        pstates[i].dpu_pstate->stage = target_stage + DPU_STAGE_0;
+        
+        DPU_DEBUG("%s: plane %d assigned to stage %d\n", 
+                  dpu_crtc->name, i, pstates[i].dpu_pstate->stage);
+    }
 
 	for (i = 0; i < multirect_count; i++) {
 		if (dpu_plane_validate_multirect_v2(&multirect_plane[i])) {
