@@ -950,11 +950,16 @@ static int dpu_crtc_atomic_check(struct drm_crtc *crtc,
 
         // use converted stage
         pstates[i].dpu_pstate->stage = target_stage + DPU_STAGE_0;
-        
+		pstates[i].stage = target_stage; // sync
+
         DPU_DEBUG("%s: plane %d assigned to stage %d\n", 
                   dpu_crtc->name, i, pstates[i].dpu_pstate->stage);
     }
-
+	
+	//sort for correct use
+	sort(pstates, cnt, sizeof(*pstates), pstate_cmp, NULL);
+	
+	
 	for (i = 0; i < multirect_count; i++) {
 		if (dpu_plane_validate_multirect_v2(&multirect_plane[i])) {
 			DPU_ERROR(
