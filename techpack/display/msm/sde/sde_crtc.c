@@ -4941,6 +4941,7 @@ static int _sde_crtc_check_zpos(struct drm_crtc_state *state,
 	z_pos = -1;
 	layout = SDE_LAYOUT_NONE;
 	for (i = 0; i < cnt; i++) {
+		SDE_ERROR("[VEBIAN] plane %d stage=%d\n", i, pstates[i].stage);
 		/* reset counts at every new blend stage */
 		if (pstates[i].stage != z_pos ||
 				pstates[i].sde_pstate->layout != layout) {
@@ -4951,9 +4952,9 @@ static int _sde_crtc_check_zpos(struct drm_crtc_state *state,
 
 		/* verify z_pos setting before using it */
 		if (z_pos >= SDE_STAGE_MAX - SDE_STAGE_0) {
-			SDE_ERROR("> %d plane stages assigned\n",
-					SDE_STAGE_MAX - SDE_STAGE_0);
-			return -EINVAL;
+			SDE_ERROR("[VEBIAN] too many stages: z_pos=%d max=%d cnt=%d\n",
+     	    z_pos, SDE_STAGE_MAX - SDE_STAGE_0, cnt);
+			z_pos = SDE_STAGE_MAX - SDE_STAGE_0 - 1;
 		} else if (zpos_cnt == 2) {
 			SDE_ERROR("> 2 planes @ stage %d\n", z_pos);
 			return -EINVAL;

@@ -811,6 +811,13 @@ struct plane_state {
 	u32 pipe_id;
 };
 
+static int pstate_cmp(const void *a, const void *b)
+{
+    return ((struct plane_state *)a)->stage -
+           ((struct plane_state *)b)->stage;
+}
+
+
 static int dpu_crtc_atomic_check(struct drm_crtc *crtc,
 		struct drm_crtc_state *state)
 {
@@ -923,7 +930,7 @@ static int dpu_crtc_atomic_check(struct drm_crtc *crtc,
 	}
 
 	for (i = 0; i < cnt; i++) {
-        DPU_ERROR("DBG plane %d: zpos=%d pipe_id=%d\n", i,
+        DPU_ERROR("[VEBIAN] DBG plane %d: zpos=%d pipe_id=%d\n", i,
             pstates[i].drm_pstate->normalized_zpos,
             pstates[i].pipe_id);
     }
