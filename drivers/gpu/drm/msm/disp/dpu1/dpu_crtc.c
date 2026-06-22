@@ -922,6 +922,12 @@ static int dpu_crtc_atomic_check(struct drm_crtc *crtc,
 		}
 	}
 
+	for (i = 0; i < cnt; i++) {
+        DPU_ERROR("DBG plane %d: zpos=%d pipe_id=%d\n", i,
+            pstates[i].drm_pstate->normalized_zpos,
+            pstates[i].pipe_id);
+    }
+
     int max_stages = DPU_STAGE_MAX - DPU_STAGE_0;
     int total_planes = cnt;
 
@@ -930,9 +936,7 @@ static int dpu_crtc_atomic_check(struct drm_crtc *crtc,
 
         if (total_planes <= max_stages) {
             // skip if layers not many
-            target_stage = pstates[i].drm_pstate->normalized_zpos;
-            if (target_stage >= max_stages)
-                target_stage = max_stages - 1;
+            target_stage = i;
         } else {
             // get half of max from vector::start and vector::end
             int half = max_stages / 2;
