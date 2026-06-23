@@ -120,6 +120,11 @@ static struct icnss_priv *icnss_get_plat_priv(void)
 {
 	return penv;
 }
+struct icnss_priv *icnss_get_priv(void) {
+    	return icnss_get_plat_priv();
+}
+EXPORT_SYMBOL(icnss_get_priv);
+
 
 static ssize_t icnss_sysfs_store(struct kobject *kobj,
 				 struct kobj_attribute *attr,
@@ -4020,12 +4025,12 @@ static int icnss_probe(struct platform_device *pdev)
 	struct icnss_priv *priv;
 	const struct of_device_id *of_id;
 	const struct platform_device_id *device_id;
-
+	pr_err("[VEBIAN] start probe icnss");
 	if (dev_get_drvdata(dev)) {
 		icnss_pr_err("Driver is already initialized\n");
 		return -EEXIST;
 	}
-
+	
 	of_id = of_match_device(icnss_dt_match, &pdev->dev);
 	if (!of_id || !of_id->data) {
 		icnss_pr_err("Failed to find of match device!\n");
@@ -4057,14 +4062,17 @@ static int icnss_probe(struct platform_device *pdev)
 
 	ret = icnss_resource_parse(priv);
 	if (ret)
+	    pr_err("[VEBIAN] icnss_resource_parse");
 		goto out_reset_drvdata;
 
 	ret = icnss_msa_dt_parse(priv);
 	if (ret)
+	    pr_err("[VEBIAN] msa_dt_parse");
 		goto out_free_resources;
 
 	ret = icnss_smmu_dt_parse(priv);
 	if (ret)
+		pr_err("[VEBIAN] smmu_dt_parse");
 		goto out_free_resources;
 
 	device_enable_async_suspend(dev);
@@ -4099,7 +4107,8 @@ static int icnss_probe(struct platform_device *pdev)
 	ret = icnss_register_fw_service(priv);
 	if (ret < 0) {
 		icnss_pr_err("fw service registration failed: %d\n", ret);
-		goto out_destroy_soc_wq;
+		//goto out_destroy_soc_wq;
+	    pr_err("[VEBIAN] fw service check skiped");
 	}
 
 	icnss_enable_recovery(priv);

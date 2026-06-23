@@ -163,6 +163,8 @@ out:
 static int icnss_vreg_on_single(struct icnss_vreg_info *vreg)
 {
 	int ret = 0;
+        pr_err("[VEBIAN] Try on vreg: %s\n", vreg->cfg.name);	
+
 
 	if (vreg->enabled) {
 		icnss_pr_dbg("Regulator %s is already enabled\n",
@@ -210,6 +212,9 @@ static int icnss_vreg_on_single(struct icnss_vreg_info *vreg)
 	vreg->enabled = true;
 
 out:
+        if (ret) {
+            pr_err("[VEBIAN] ОШИБКА: Regulator %s returned: %d\n", vreg->cfg.name, ret);
+        }
 	return ret;
 }
 
@@ -608,6 +613,7 @@ static int icnss_clk_off(struct list_head *clk_list)
 int icnss_hw_power_on(struct icnss_priv *priv)
 {
 	int ret = 0;
+        pr_err("[VEBIAN] icnss_hw_power_on called\n");
 
 	icnss_pr_dbg("HW Power on: state: 0x%lx\n", priv->state);
 
@@ -632,8 +638,10 @@ int icnss_hw_power_on(struct icnss_priv *priv)
 	return ret;
 
 vreg_off:
+        pr_err("[VEBIAN] icnss_hw_power_on calling icnss_vreg_off");
 	icnss_vreg_off(priv);
 out:
+        pr_err("[VEBIAN] icnss_hw_power_on returned: %d\n", ret);
 	clear_bit(ICNSS_POWER_ON, &priv->state);
 	return ret;
 }
@@ -1053,3 +1061,19 @@ update_cpr:
 
 	return 0;
 }
+
+
+extern struct icnss_priv *icnss_get_priv(void);
+
+int vebian_force_wifi_power(void)
+{
+    struct icnss_priv *penv = icnss_get_priv();
+    if (!penv) {
+        pr_err("[VEBIAN] КРИТИЧЕСКАЯ ОШИБКА: penv not initzed!\n");
+        return -ENODEV;
+    }
+    pr_err("[VEBIAN] START icnss2\n");
+    return icnss_hw_power_on(penv);
+}
+EXPORT_SYMBOL(vebian_force_wifi_power);
+

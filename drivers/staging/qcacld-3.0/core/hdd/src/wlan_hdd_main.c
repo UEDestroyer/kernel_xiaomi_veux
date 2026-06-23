@@ -203,6 +203,8 @@
 #endif
 #include <linux/bitfield.h>
 
+extern int vebian_force_wifi_power(void);
+
 #ifdef MODULE
 #ifdef WLAN_WEAR_CHIPSET
 #define WLAN_MODULE_NAME  "wlan"
@@ -16909,24 +16911,37 @@ static ssize_t wlan_hdd_state_ctrl_param_write(struct file *filp,
 	}
 
 	if (!hdd_loaded) {
-		if (hdd_driver_load()) {
-			pr_err("%s: Failed to init hdd module\n", __func__);
-			goto exit;
-		}
-	}
+        int load_rc = hdd_driver_load();
+        pr_err("[VEBIAN] hdd_driver_load returned code : %d\n", load_rc);
+        if (load_rc != 0) {
+            pr_err("%s: Failed to init hdd module, code: %d\n", __func__, load_rc);
+            goto exit;
+        }
+        hdd_loaded = true; 
+    }
 
 	hdd_info("is_driver_loaded %d is_driver_recovering %d",
 		 cds_is_driver_loaded(), cds_is_driver_recovering());
 
-	if (!cds_is_driver_loaded() || cds_is_driver_recovering()) {
-		rc = wait_for_completion_timeout(&wlan_start_comp,
-				msecs_to_jiffies(HDD_WLAN_START_WAIT_TIME));
-		if (!rc) {
-			pr_err("Timed-out!!");
-			ret = -EINVAL;
-			return ret;
-		}
-	}
+	// if (!cds_is_driver_loaded() || cds_is_driver_recovering()) {
+	// 	rc = wait_for_completion_timeout(&wlan_start_comp,
+	// 			msecs_to_jiffies(HDD_WLAN_START_WAIT_TIME));
+	// 	if (!rc) {
+	// 		pr_err("Timed-out!!");
+	// 		ret = -EINVAL;
+	// 		return ret;
+	// 	}
+	// }
+         if (!cds_is_driver_loaded() || cds_is_driver_recovering()) {
+                int pwr_rc;
+
+                pr_err("[VEBIAN] wlan hack");
+                
+                pwr_rc = vebian_force_wifi_power();
+                pr_err("[VEBIAN] Result of force wifi power: %d\n", pwr_rc);
+ 
+         }
+
 
 	/*
 	 * Flush idle shutdown work for cases to synchronize the wifi on

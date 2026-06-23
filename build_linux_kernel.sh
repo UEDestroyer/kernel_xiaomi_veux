@@ -86,19 +86,28 @@ set_config "CONFIG_TOUCHSCREEN_FTS" "CONFIG_TOUCHSCREEN_FTS=y"
 
 
 #usb
-# Отключаем Qualcomm GSI
-# Отключаем Qualcomm GSI, указывая точный путь к конфигу в out/
+# --- USB ECM конфигурация ---
+# 1. Вырубаем капризный андроидный Qualcomm GSI
 ./scripts/config --file "$TARGET_CONFIG" --disable CONFIG_USB_CONFIGFS_F_GSI
 ./scripts/config --file "$TARGET_CONFIG" --disable CONFIG_USB_F_GSI
 
-# Включем стандартный ванильный RNDIS
-./scripts/config --file "$TARGET_CONFIG" --enable CONFIG_USB_F_RNDIS
+# 2. Выключаем RNDIS (раз он нам не нужен)
+./scripts/config --file "$TARGET_CONFIG" --disable CONFIG_USB_CONFIGFS_RNDIS
+./scripts/config --file "$TARGET_CONFIG" --disable CONFIG_USB_F_RNDIS
+
+# 3. Включаем ГЛАВНЫЙ переключатель ECM для ConfigFS
+./scripts/config --file "$TARGET_CONFIG" --enable CONFIG_USB_CONFIGFS_ECM
+
+# 4. Включаем сам драйвер функции ECM
+./scripts/config --file "$TARGET_CONFIG" --enable CONFIG_USB_F_ECM
 
 # Пересчитываем зависимости после патчинга
 echo "[KERNEL-BUILD] Resolving config dependencies (olddefconfig)..."
 make olddefconfig O=out ARCH=arm64 CC=clang LLVM=1 LLVM_IAS=1
 
 echo "[KERNEL-BUILD] Config patched successfully!"
+
+
 
 # === 5. КОМПИЛЯЦИЯ ===
 echo "[KERNEL-BUILD] Compiling..."

@@ -4,7 +4,7 @@ PATCHLEVEL = 4
 SUBLEVEL = 292
 EXTRAVERSION =
 NAME = Kleptomaniac Octopus
-
+KBUILD_CFLAGS += -Wunused-label
 # indicate that change "Kbuild: Support nested composite objects" is
 # present in the kernel so that out-of-tree modules can act upon it
 export KERNEL_SUPPORTS_NESTED_COMPOSITES := y
