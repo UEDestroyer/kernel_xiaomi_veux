@@ -109,3 +109,13 @@ config DRM_MSM_DSI_10NM_PHY
 	default y
 	help
 	  Choose this option if DSI PHY on SDM845 is used on the platform.
+
+
+config MSM_SDE_ROTATOR
+	bool "Enable MSM SDE Rotator support"
+	default y
+
+config MSM_SDE_ROTATOR_DEBUG
+	bool "Enable MSM SDE Rotator DebugFS"
+	depends on DEBUG_FS
+	default y

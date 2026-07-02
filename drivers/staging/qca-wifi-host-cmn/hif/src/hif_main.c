@@ -1203,25 +1203,25 @@ QDF_STATUS hif_enable(struct hif_opaque_softc *hif_ctx, struct device *dev,
 	struct hif_softc *scn = HIF_GET_SOFTC(hif_ctx);
 
 	if (!scn) {
-		hif_err("hif_ctx = NULL");
+		pr_err("[VEBIAN] hif_ctx = NULL");
 		return QDF_STATUS_E_NULL_VALUE;
 	}
 
 	status = hif_enable_bus(scn, dev, bdev, bid, type);
 	if (status != QDF_STATUS_SUCCESS) {
-		hif_err("hif_enable_bus error = %d", status);
+		pr_err("[VEBIAN] hif_enable_bus error = %d", status);
 		return status;
 	}
 
 	hif_pm_set_link_state(GET_HIF_OPAQUE_HDL(scn), HIF_PM_LINK_STATE_UP);
 	status = hif_hal_attach(scn);
 	if (status != QDF_STATUS_SUCCESS) {
-		hif_err("hal attach failed");
+		pr_err("[VEBIAN] hal attach failed");
 		goto disable_bus;
 	}
 
 	if (hif_bus_configure(scn)) {
-		hif_err("Target probe failed");
+		pr_err("[VEBIAN] Target probe failed");
 		status = QDF_STATUS_E_FAILURE;
 		goto hal_detach;
 	}

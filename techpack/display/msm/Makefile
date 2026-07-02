@@ -1,9 +1,18 @@
 # SPDX-License-Identifier: GPL-2.0
+
+ifdef O
+    vpath %.c $(srctree)/techpack/display/msm
+    vpath %.c $(srctree)/techpack/display/rotator
+    vpath %.c $(srctree)/techpack/display/hdcp
+endif
+
 ccflags-y := -I$(srctree)/include/drm -I$(srctree)/techpack/display/msm -I$(srctree)/techpack/display/msm/dsi -I$(srctree)/techpack/display/msm/dp
 ccflags-y += -I$(srctree)/techpack/display/msm/sde
 ccflags-y += -I$(srctree)/techpack/display/rotator
 ccflags-y += -I$(srctree)/techpack/display/hdcp
 ccflags-y += -I$(srctree)/drivers/clk/qcom/
+
+#defines
 
 msm_drm-$(CONFIG_DRM_MSM_DP) += dp/dp_altmode.o \
 	dp/dp_parser.o \
@@ -144,22 +153,22 @@ msm_drm-$(CONFIG_DRM_MSM) += \
 
 msm_drm-$(CONFIG_HDCP_QSEECOM) += ../hdcp/msm_hdcp.o \
 
-msm_drm-$(CONFIG_MSM_SDE_ROTATOR) += ../rotator/sde_rotator_dev.o \
-	../rotator/sde_rotator_core.o \
-	../rotator/sde_rotator_base.o \
-	../rotator/sde_rotator_formats.o \
-	../rotator/sde_rotator_util.o \
-	../rotator/sde_rotator_io_util.o \
-	../rotator/sde_rotator_smmu.o \
-	../rotator/sde_rotator_r1_wb.o \
-	../rotator/sde_rotator_r1_pipe.o \
-	../rotator/sde_rotator_r1_ctl.o \
-	../rotator/sde_rotator_r1.o \
-	../rotator/sde_rotator_r3.o \
-	../rotator/sde_rotator_sync.o \
-	../rotator/sde_rotator_debug.o \
-	../rotator/sde_rotator_r1_debug.o \
-	../rotator/sde_rotator_r3_debug.o
+msm_drm-$(CONFIG_MSM_SDE_ROTATOR) += rotator/sde_rotator_dev.o \
+    rotator/sde_rotator_core.o \
+    rotator/sde_rotator_base.o \
+    rotator/sde_rotator_formats.o \
+    rotator/sde_rotator_util.o \
+    rotator/sde_rotator_io_util.o \
+    rotator/sde_rotator_smmu.o \
+    rotator/sde_rotator_r1_wb.o \
+    rotator/sde_rotator_r1_pipe.o \
+    rotator/sde_rotator_r1_ctl.o \
+    rotator/sde_rotator_r1.o \
+    rotator/sde_rotator_r3.o \
+    rotator/sde_rotator_sync.o \
+    rotator/sde_rotator_debug.o \
+    rotator/sde_rotator_r1_debug.o \
+    rotator/sde_rotator_r3_debug.o
 
 obj-$(CONFIG_DISPLAY_BUILD)	+= msm_drm.o
 

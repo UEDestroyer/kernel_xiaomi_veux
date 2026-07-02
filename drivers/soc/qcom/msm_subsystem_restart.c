@@ -761,23 +761,35 @@ static int subsys_start(struct subsys_device *subsys)
 static void subsys_stop(struct subsys_device *subsys)
 {
 	const char *name = subsys->desc->name;
+	pr_err("[VEBIAN] STOP0 (start subsys_stop) %s\n", name);
+
 
 	notify_each_subsys_device(&subsys, 1, SUBSYS_BEFORE_SHUTDOWN, NULL);
 	if (!of_property_read_bool(subsys->desc->dev->of_node,
 					"qcom,pil-force-shutdown")) {
+		pr_err("[VEBIAN] STOP1 (before SUBSYS_OFFLINING) %s\n", subsys->desc->name);
 		subsys_set_state(subsys, SUBSYS_OFFLINING);
+		pr_err("[VEBIAN] STOP2 (after SUBSYS_OFFLINING) %s\n", subsys->desc->name);
+
 		setup_timeout(NULL, subsys->desc,
 			      HLOS_TO_SUBSYS_SYSMON_SHUTDOWN);
+		pr_err("[VEBIAN] STOP3 (after setup_timeout) %s\n", subsys->desc->name);
 		subsys->desc->sysmon_shutdown_ret =
 				sysmon_send_shutdown(subsys->desc);
+		pr_err("[VEBIAN] STOP4 (after setup_shutdown) %s\n", subsys->desc->name);
 		cancel_timeout(subsys->desc);
+		pr_err("[VEBIAN] STOP5 (after setup_timeout) %s\n", subsys->desc->name);
 		if (subsys->desc->sysmon_shutdown_ret)
 			pr_debug("Graceful shutdown failed for %s\n", name);
+			pr_err("[VEBIAN] STOP6 Graceful shutdown failed for%s\n", subsys->desc->name);
 	}
-
+	pr_err("[VEBIAN] STOP7 (before shutdown(desc,false)) %s\n", name);
 	subsys->desc->shutdown(subsys->desc, false);
+	pr_err("[VEBIAN] STOP8 (before SUBSYS_OFFLINE) %s\n", name);
 	subsys_set_state(subsys, SUBSYS_OFFLINE);
+	pr_err("[VEBIAN] STOP9 (before notify_each_subsys_device) %s\n", name);
 	notify_each_subsys_device(&subsys, 1, SUBSYS_AFTER_SHUTDOWN, NULL);
+	pr_err("[VEBIAN] STOP10 (after notify_each_subsys_device) %s\n", name);
 }
 
 int subsystem_set_fwname(const char *name, const char *fw_name)
@@ -809,6 +821,8 @@ static void *__subsystem_get(const char *name, const char *fw_name)
 	int ret;
 	void *retval;
 	struct subsys_tracking *track;
+
+	//pr_err("[VEBIAN] GET %s\n", subsys->desc->name);
 
 	if (!name)
 		return NULL;
@@ -896,9 +910,11 @@ void subsystem_put(void *subsystem)
 {
 	struct subsys_device *subsys_d, *subsys = subsystem;
 	struct subsys_tracking *track;
-
+	//
 	if (IS_ERR_OR_NULL(subsys))
 		return;
+	
+	pr_err("[VEBIAN] PUT %s\n", subsys->desc->name);
 
 	subsys_d = find_subsys_device(subsys->desc->poff_depends_on);
 	if (subsys_d)
@@ -1471,6 +1487,8 @@ struct subsys_device *subsys_register(struct subsys_desc *desc)
 	subsys->early_notify = subsys_get_early_notif_info(desc->name);
 
 	snprintf(subsys->wlname, sizeof(subsys->wlname), "ssr(%s)", desc->name);
+
+	pr_err("[VEBIAN] REGISTER %s\n", desc->name);
 
 	INIT_WORK(&subsys->work, subsystem_restart_wq_func);
 	INIT_WORK(&subsys->device_restart_work, device_restart_work_hdlr);

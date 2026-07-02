@@ -351,6 +351,8 @@ void icnss_put_vreg(struct icnss_priv *priv)
 
 static int icnss_vreg_on(struct icnss_priv *priv)
 {
+
+
 	struct list_head *vreg_list = &priv->vreg_list;
 	struct icnss_vreg_info *vreg = NULL;
 	int ret = 0;
@@ -387,6 +389,7 @@ static int icnss_vreg_on(struct icnss_priv *priv)
 
 static int icnss_vreg_off(struct icnss_priv *priv)
 {
+
 	struct list_head *vreg_list = &priv->vreg_list;
 	struct icnss_vreg_info *vreg = NULL;
 
@@ -1064,16 +1067,64 @@ update_cpr:
 
 
 extern struct icnss_priv *icnss_get_priv(void);
+extern struct platform_driver icnss_driver;
 
 int vebian_force_wifi_power(void)
 {
-    struct icnss_priv *penv = icnss_get_priv();
-    if (!penv) {
-        pr_err("[VEBIAN] КРИТИЧЕСКАЯ ОШИБКА: penv not initzed!\n");
+    struct device *dev;
+    struct platform_device *pdev;
+    void *penv = NULL;
+
+    pr_err("[VEBIAN] try force icnss2...\n");
+
+    // 1. Снова находим само устройство
+    dev = bus_find_device_by_name(&platform_bus_type, NULL, "c800000.qcom,icnss");
+    if (!dev) {
+        pr_err("[VEBIAN] ERR: c800000.qcom,icnss not found!\n");
         return -ENODEV;
     }
-    pr_err("[VEBIAN] START icnss2\n");
+
+    // Преобразуем device в platform_device
+    pdev = to_platform_device(dev);
+
+    // 2. ХАК: Пытаемся забрать dev.platform_data напрямую
+    if (pdev->dev.platform_data) {
+        penv = pdev->dev.platform_data;
+        pr_err("[VEBIAN] Context found platform_data!\n");
+    } 
+    // 3. ХАК 2: Если там пусто, ищем глобально забитый priv в драйвере
+    else {
+        // Попробуем вытащить drvdata из контейнера самого драйвера, а не устройства
+        if (icnss_driver.driver.p) {
+            // Внутренние структуры ядра (зависит от версии, но часто drvdata дублируется)
+            penv = dev_get_drvdata(&pdev->dev);
+        }
+    }
+
+    // 4. ПОСЛЕДНИЙ ШАНС (Если всё еще NULL): 
+    // Мы создадим минимальный фейковый penv прямо сейчас, чтобы функция не падала
+    if (!penv) {
+        pr_err("[VEBIAN] WARN: Context is null.create new!\n");
+        // Выделяем память под структуру, размер берем с запасом (например, 4КБ), 
+        // чтобы icnss_hw_power_on не ушел в Null Pointer Dereference при чтении полей
+        penv = kzalloc(4096, GFP_KERNEL); 
+        if (!penv) {
+            put_device(dev);
+            return -ENOMEM;
+        }
+        
+        // Переносим базовое устройство в наш фейк, так как регуляторы питания 
+        // будут запрашиваться через devm_regulator_get(dev, ...)
+        // Обычно struct device *dev лежит в самом начале структуры icnss_priv (offset 0)
+        *((struct device **)penv) = dev; 
+    }
+
+    pr_err("[VEBIAN] Start hw_power_on ...\n");
+    put_device(dev); // clear list
+
     return icnss_hw_power_on(penv);
 }
+
+
 EXPORT_SYMBOL(vebian_force_wifi_power);
 

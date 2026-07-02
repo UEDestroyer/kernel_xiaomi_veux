@@ -73,11 +73,7 @@ QDF_STATUS hif_post_recv_buffers_for_pipe(struct HIF_CE_pipe_info *pipe_info);
 /* #define BMI_RSP_POLLING */
 #define BMI_RSP_TO_MILLISEC  1000
 
-#ifdef CONFIG_BYPASS_QMI
 #define BYPASS_QMI 1
-#else
-#define BYPASS_QMI 0
-#endif
 
 #ifdef ENABLE_10_4_FW_HDR
 #if (ENABLE_10_4_FW_HDR == 1)

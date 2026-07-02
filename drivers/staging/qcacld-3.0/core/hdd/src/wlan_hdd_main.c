@@ -24,7 +24,9 @@
  *
  */
 
-/* Include Files */
+/* Include Files */ //ебать ты шулер
+#include <linux/delay.h>
+#include <linux/platform_device.h> 
 #include <wbuff.h>
 #include "cfg_ucfg_api.h"
 #include <wlan_hdd_includes.h>
@@ -4022,6 +4024,7 @@ int hdd_wlan_start_modules(struct hdd_context *hdd_ctx, bool reinit)
 	hdd_enter();
 	qdf_dev = cds_get_context(QDF_MODULE_ID_QDF_DEVICE);
 	if (!qdf_dev) {
+		pr_err("[VEBIAN] cds_get_context returned 0");
 		hdd_err("QDF Device Context is Invalid return");
 		hdd_exit();
 		return -EINVAL;
@@ -4030,6 +4033,7 @@ int hdd_wlan_start_modules(struct hdd_context *hdd_ctx, bool reinit)
 	hdd_psoc_idle_timer_stop(hdd_ctx);
 
 	if (hdd_ctx->driver_status == DRIVER_MODULES_ENABLED) {
+		pr_err("[VEBIAN] hdd_ctx->driver_status == DRIVER_MODULES_ENABLED after hdd_psoc_idle_timer_stop(hdd_ctx)");
 		hdd_debug("Driver modules already Enabled");
 		hdd_exit();
 		return 0;
@@ -4050,7 +4054,7 @@ int hdd_wlan_start_modules(struct hdd_context *hdd_ctx, bool reinit)
 		if (!reinit && !unint) {
 			ret = pld_power_on(qdf_dev->dev);
 			if (ret) {
-				hdd_err("Failed to power up device; errno:%d",
+				pr_err("[VEBIAN] Failed to power up device; errno:%d",
 					ret);
 				goto release_lock;
 			}
@@ -4060,27 +4064,31 @@ int hdd_wlan_start_modules(struct hdd_context *hdd_ctx, bool reinit)
 		hdd_init_adapter_ops_wq(hdd_ctx);
 		pld_set_fw_log_mode(hdd_ctx->parent_dev,
 				    hdd_ctx->config->enable_fw_log);
-		ret = hdd_hif_open(qdf_dev->dev, qdf_dev->drv_hdl, qdf_dev->bid,
+		ret = hdd_hif_open_ctx(qdf_dev->dev, qdf_dev->drv_hdl, qdf_dev->bid,
 				   qdf_dev->bus_type,
 				   (reinit == true) ?  HIF_ENABLE_TYPE_REINIT :
-				   HIF_ENABLE_TYPE_PROBE);
+				   HIF_ENABLE_TYPE_PROBE,hdd_ctx);
 		if (ret) {
 			hdd_err("Failed to open hif; errno: %d", ret);
+			pr_err("[VEBIAN] Failed to open hif; errno: %d", ret);
 			goto power_down;
 		}
 
 		hif_ctx = cds_get_context(QDF_MODULE_ID_HIF);
 		if (!hif_ctx) {
 			hdd_err("hif context is null!!");
+			pr_err("[VEBIAN] hif context is null!!");
 			ret = -EINVAL;
 			goto power_down;
 		}
 
 		status = ol_cds_init(qdf_dev, hif_ctx);
 		if (status != QDF_STATUS_SUCCESS) {
-			hdd_err("No Memory to Create BMI Context; status: %d",
+			pr_err("[VEBIAN] No Memory to Create BMI Context; status: %d",
 				status);
 			ret = qdf_status_to_os_return(status);
+			pr_err("[VEBIAN] No Memory to Create BMI Context; ret: %d",
+				ret);
 			goto hif_close;
 		}
 
@@ -4089,13 +4097,15 @@ int hdd_wlan_start_modules(struct hdd_context *hdd_ctx, bool reinit)
 			if (status) {
 				hdd_err("Failed to open in epping mode: %d",
 					status);
+				pr_err("[VEBIAN] Failed to open in epping mode: %d",
+					status);
 				ret = -EINVAL;
 				goto cds_free;
 			}
 
 			status = epping_enable(qdf_dev->dev, false);
 			if (status) {
-				hdd_err("Failed to enable in epping mode : %d",
+				pr_err("[VEBIAN] Failed to enable in epping mode : %d",
 					status);
 				epping_close();
 				goto cds_free;
@@ -4111,7 +4121,7 @@ int hdd_wlan_start_modules(struct hdd_context *hdd_ctx, bool reinit)
 
 		status = hdd_component_psoc_open(hdd_ctx->psoc);
 		if (QDF_IS_STATUS_ERROR(status)) {
-			hdd_err("Failed to Open legacy components; status: %d",
+			pr_err("[VEBIAN] Failed to Open legacy components; status: %d",
 				status);
 			ret = qdf_status_to_os_return(status);
 			goto ipa_component_free;
@@ -4119,18 +4129,18 @@ int hdd_wlan_start_modules(struct hdd_context *hdd_ctx, bool reinit)
 
 		ret = hdd_update_config(hdd_ctx);
 		if (ret) {
-			hdd_err("Failed to update configuration; errno: %d",
+			pr_err("[VEBIAN] Failed to update configuration; errno: %d",
 				ret);
 			goto ipa_component_free;
 		}
 
 		status = wbuff_module_init();
 		if (QDF_IS_STATUS_ERROR(status))
-			hdd_err("WBUFF init unsuccessful; status: %d", status);
+			pr_err("[VEBIAN] WBUFF init unsuccessful; status: %d", status);
 
 		status = cds_open(hdd_ctx->psoc);
 		if (QDF_IS_STATUS_ERROR(status)) {
-			hdd_err("Failed to Open CDS; status: %d", status);
+			pr_err("[VEBIAN] Failed to Open CDS; status: %d", status);
 			ret = qdf_status_to_os_return(status);
 			goto psoc_close;
 		}
@@ -4150,7 +4160,7 @@ int hdd_wlan_start_modules(struct hdd_context *hdd_ctx, bool reinit)
 		/* initialize components configurations after psoc open */
 		ret = hdd_update_components_config(hdd_ctx);
 		if (ret) {
-			hdd_err("Failed to update component configs; errno: %d",
+			pr_err("[VEBIAN] Failed to update component configs; errno: %d",
 				ret);
 			goto close;
 		}
@@ -4161,7 +4171,7 @@ int hdd_wlan_start_modules(struct hdd_context *hdd_ctx, bool reinit)
 
 		status = cds_dp_open(hdd_ctx->psoc);
 		if (!QDF_IS_STATUS_SUCCESS(status)) {
-			hdd_err("Failed to Open cds post open; status: %d",
+			pr_err("[VEBIAN] Failed to Open cds post open; status: %d",
 				status);
 			ret = qdf_status_to_os_return(status);
 			goto close;
@@ -4171,7 +4181,7 @@ int hdd_wlan_start_modules(struct hdd_context *hdd_ctx, bool reinit)
 
 		ret = hdd_register_cb(hdd_ctx);
 		if (ret) {
-			hdd_err("Failed to register HDD callbacks!");
+			pr_err("[VEBIAN] Failed to register HDD callbacks!");
 			goto cds_txrx_free;
 		}
 
@@ -4190,7 +4200,7 @@ int hdd_wlan_start_modules(struct hdd_context *hdd_ctx, bool reinit)
 
 		status = cds_pre_enable();
 		if (!QDF_IS_STATUS_SUCCESS(status)) {
-			hdd_err("Failed to pre-enable CDS; status: %d", status);
+			pr_err("[VEBIAN] Failed to pre-enable CDS; status: %d", status);
 			ret = qdf_status_to_os_return(status);
 			goto unregister_notifiers;
 		}
@@ -4210,14 +4220,14 @@ int hdd_wlan_start_modules(struct hdd_context *hdd_ctx, bool reinit)
 
 		if (QDF_GLOBAL_FTM_MODE == hdd_get_conparam()) {
 			hdd_enable_power_management(hdd_ctx);
-			hdd_err("in ftm mode, no need to configure cds modules");
+			pr_err("[VEBIAN] in ftm mode, no need to configure cds modules");
 			ret = -EINVAL;
 			break;
 		}
 
 		ret = hdd_configure_cds(hdd_ctx);
 		if (ret) {
-			hdd_err("Failed to Enable cds modules; errno: %d", ret);
+			pr_err("[VEBIAN] Failed to Enable cds modules; errno: %d", ret);
 			goto sched_disable;
 		}
 
@@ -12925,7 +12935,10 @@ struct hdd_context *hdd_context_create(struct device *dev)
 {
 	QDF_STATUS status;
 	int ret = 0;
+	int logCount = 0;
 	struct hdd_context *hdd_ctx;
+
+
 
 	hdd_enter();
 
@@ -12940,8 +12953,11 @@ struct hdd_context *hdd_context_create(struct device *dev)
 					 hdd_ctx);
 	if (QDF_IS_STATUS_ERROR(status)) {
 		ret = qdf_status_to_os_return(status);
+		pr_err("[VEBIAN] context create error num log: %d, err: %s\n", logCount, ret);logCount++;
 		goto wiphy_dealloc;
 	}
+
+	logCount+=10;
 
 	hdd_ctx->parent_dev = dev;
 	hdd_ctx->last_scan_reject_vdev_id = WLAN_UMAC_VDEV_ID_MAX;
@@ -12949,25 +12965,28 @@ struct hdd_context *hdd_context_create(struct device *dev)
 	hdd_ctx->config = qdf_mem_malloc(sizeof(struct hdd_config));
 	if (!hdd_ctx->config) {
 		ret = -ENOMEM;
+		pr_err("[VEBIAN] context create error num log: %d, err: %s\n", logCount, ret);logCount++;
 		goto err_free_hdd_context;
 	}
-
+	logCount+=10;
 	status = cfg_parse(WLAN_INI_FILE);
 	if (QDF_IS_STATUS_ERROR(status)) {
 		hdd_err("Failed to parse cfg %s; status:%d\n",
 			WLAN_INI_FILE, status);
+		pr_err("[VEBIAN] context create error num log: %d, err: %s\n", logCount, ret);logCount++;
 		/* Assert if failed to parse at least one INI parameter */
 		QDF_BUG(status != QDF_STATUS_E_INVAL);
 		ret = qdf_status_to_os_return(status);
 		goto err_free_config;
 	}
-
+	logCount+=10;
 	ret = hdd_objmgr_create_and_store_psoc(hdd_ctx, DEFAULT_PSOC_ID);
 	if (ret) {
 		QDF_DEBUG_PANIC("Psoc creation fails!");
+		pr_err("[VEBIAN] context create error num log: %d, err: %s\n", logCount, ret);logCount++;
 		goto err_release_store;
 	}
-
+	logCount+=10;
 	hdd_cfg_params_init(hdd_ctx);
 
 	/* apply multiplier config, if not already set via module parameter */
@@ -12982,21 +13001,22 @@ struct hdd_context *hdd_context_create(struct device *dev)
 	hdd_override_ini_config(hdd_ctx);
 
 	ret = hdd_context_init(hdd_ctx);
-
-	if (ret)
-		goto err_hdd_objmgr_destroy;
-
-	if (hdd_get_conparam() == QDF_GLOBAL_EPPING_MODE)
-		goto skip_multicast_logging;
-
+	logCount+=10;
+	if (ret){pr_err("[VEBIAN] context create error num log: %d, err: %s\n", logCount, ret);logCount++;
+		goto err_hdd_objmgr_destroy;}
+	logCount+=10;
+	if (hdd_get_conparam() == QDF_GLOBAL_EPPING_MODE){pr_err("[VEBIAN] context create error num log: %d, err: %s\n", logCount, ret);logCount++;
+		goto skip_multicast_logging;}
+	logCount+=10;
 	cds_set_multicast_logging(hdd_ctx->config->multicast_host_fw_msgs);
 	ret = hdd_init_netlink_services(hdd_ctx);
-	if (ret)
+	logCount+=10;
+	if (ret){pr_err("[VEBIAN] context create error num log: %d, err: %s\n", logCount, ret);logCount++;
 		goto err_deinit_hdd_context;
-
+	}
 	hdd_set_wlan_logging(hdd_ctx);
 	qdf_atomic_init(&hdd_ctx->adapter_ops_history.index);
-
+	logCount+=10;
 skip_multicast_logging:
 	hdd_set_trace_level_for_each(hdd_ctx);
 
@@ -15535,12 +15555,14 @@ int hdd_wlan_startup(struct hdd_context *hdd_ctx)
 	if (errno) {
 		hdd_err("Failed to initialize regulatory update event; errno:%d",
 			errno);
+		
 		goto memdump_deinit;
 	}
 
 	errno = hdd_wlan_start_modules(hdd_ctx, false);
 	if (errno) {
 		hdd_err("Failed to start modules; errno:%d", errno);
+		pr_err("[VEBIAN] failed at hdd_wlan_start_modules: %d\n", errno);
 		goto memdump_deinit;
 	}
 
@@ -15551,12 +15573,14 @@ int hdd_wlan_startup(struct hdd_context *hdd_ctx)
 
 	hdd_ctx->mac_handle = cds_get_context(QDF_MODULE_ID_SME);
 	if (!hdd_ctx->mac_handle) {
+		pr_err("[VEBIAN] failed: mac_handle is NULL\n");
 		hdd_err("Mac Handle is null");
 		goto stop_modules;
 	}
 
 	errno = hdd_wiphy_init(hdd_ctx);
 	if (errno) {
+		pr_err("[VEBIAN] failed at hdd_wiphy_init: %d\n", errno);
 		hdd_err("Failed to initialize wiphy; errno:%d", errno);
 		goto stop_modules;
 	}
@@ -15564,11 +15588,13 @@ int hdd_wlan_startup(struct hdd_context *hdd_ctx)
 	errno = hdd_initialize_mac_address(hdd_ctx);
 	if (errno) {
 		hdd_err("MAC initializtion failed: %d", errno);
+		pr_err("[VEBIAN] failed at hdd_initialize_mac_address: %d\n", errno);
 		goto unregister_wiphy;
 	}
 
 	errno = register_netdevice_notifier(&hdd_netdev_notifier);
 	if (errno) {
+		pr_err("[VEBIAN] register_netdevice_notifier failed; errno: %d\n", errno);
 		hdd_err("register_netdevice_notifier failed; errno:%d", errno);
 		goto unregister_wiphy;
 	}
@@ -16875,86 +16901,132 @@ static void hdd_inform_wifi_on(void)
 }
 #endif
 
+struct hdd_context *vebian_saved_hdd_ctx = NULL;
+
 int hdd_driver_load(void);
 static ssize_t wlan_hdd_state_ctrl_param_write(struct file *filp,
-						const char __user *user_buf,
-						size_t count,
-						loff_t *f_pos)
+                        const char __user *user_buf,
+                        size_t count,
+                        loff_t *f_pos)
 {
-	char buf[3];
-	static const char wlan_off_str[] = "OFF";
-	static const char wlan_on_str[] = "ON";
-	int ret;
-	unsigned long rc;
-	struct hdd_context *hdd_ctx;
-	bool turning_on = false;
+    char buf[3];
+    static const char wlan_off_str[] = "OFF";
+    static const char wlan_on_str[] = "ON";
+    int ret;
+    unsigned long rc;
+    struct hdd_context *hdd_ctx = NULL;
+    bool turning_on = false;
 
-	if (copy_from_user(buf, user_buf, 3)) {
-		pr_err("Failed to read buffer\n");
-		return -EINVAL;
-	}
-
-	if (strncmp(buf, wlan_off_str, strlen(wlan_off_str)) == 0) {
-		hdd_info("Wifi turning off from UI\n");
-		hdd_inform_wifi_off();
-		goto exit;
-	}
-
-	if (strncmp(buf, wlan_on_str, strlen(wlan_on_str)) == 0) {
-		hdd_info("Wifi Turning On from UI\n");
-		turning_on = true;
-	}
-
-	if (strncmp(buf, wlan_on_str, strlen(wlan_on_str)) != 0) {
-		pr_err("Invalid value received from framework");
-		goto exit;
-	}
-
-	if (!hdd_loaded) {
-        int load_rc = hdd_driver_load();
-        pr_err("[VEBIAN] hdd_driver_load returned code : %d\n", load_rc);
-        if (load_rc != 0) {
-            pr_err("%s: Failed to init hdd module, code: %d\n", __func__, load_rc);
-            goto exit;
-        }
-        hdd_loaded = true; 
+    if (copy_from_user(buf, user_buf, 3)) {
+        pr_err("Failed to read buffer\n");
+        return -EINVAL;
     }
 
-	hdd_info("is_driver_loaded %d is_driver_recovering %d",
-		 cds_is_driver_loaded(), cds_is_driver_recovering());
+    if (strncmp(buf, wlan_off_str, strlen(wlan_off_str)) == 0) {
+        hdd_info("Wifi turning off from UI\n");
+        hdd_inform_wifi_off();
+        goto exit;
+    }
 
-	// if (!cds_is_driver_loaded() || cds_is_driver_recovering()) {
-	// 	rc = wait_for_completion_timeout(&wlan_start_comp,
-	// 			msecs_to_jiffies(HDD_WLAN_START_WAIT_TIME));
-	// 	if (!rc) {
-	// 		pr_err("Timed-out!!");
-	// 		ret = -EINVAL;
-	// 		return ret;
-	// 	}
-	// }
-         if (!cds_is_driver_loaded() || cds_is_driver_recovering()) {
-                int pwr_rc;
+    if (strncmp(buf, wlan_on_str, strlen(wlan_on_str)) == 0) {
+        hdd_info("Wifi Turning On from UI\n");
+        turning_on = true;
+    }
 
-                pr_err("[VEBIAN] wlan hack");
+    if (strncmp(buf, wlan_on_str, strlen(wlan_on_str)) != 0) {
+        pr_err("Invalid value received from framework");
+        goto exit;
+    }
+
+    hdd_info("is_driver_loaded %d is_driver_recovering %d",
+         cds_is_driver_loaded(), cds_is_driver_recovering());
+	if (!cds_is_driver_loaded() || cds_is_driver_recovering()) {
+        int pwr_rc;
+
+        pr_err("[VEBIAN] wlan hack\n");
+//        if (test_bit(ICNSS_FW_READY, &penv->state)) {
+//			icnss_pr_err("[VEBIAN] FW already ready, skipping power_on\n");
+		// 	pwr_rc = 0;
+		// }else {
+		// 	pwr_rc = vebian_force_wifi_power();
+		// }
+        pwr_rc = 0;
+        if (pwr_rc == 0) {
+            pr_err("[VEBIAN] Power is ON. Forcing network interface startup...\n");
+            
+            if (!hdd_loaded) {
+                int load_rc = hdd_driver_load();
+                pr_err("[VEBIAN] hdd_driver_load returned code : %d\n", load_rc);
+                if (load_rc != 0) {
+                    pr_err("%s: Failed to init hdd module, code: %d\n", __func__, load_rc);
+                    goto exit;
+                }
+                hdd_loaded = true; 
+            } 
+            
+            pr_err("[VEBIAN] Sleeping for 800ms to stabilize voltages...\n");
+            msleep(800);
+            
+            pr_err("[VEBIAN] Power is up, triggering platform bus rescan to invoke probe...\n");
+            
+            ret = bus_rescan_devices(&platform_bus_type);
+            pr_err("[VEBIAN] bus_rescan_devices returned: %d\n", ret);
+            
+            if (ret == -517 || ret == -EPROBE_DEFER) {
+                struct platform_device *dummy_pdev;
+                pr_err("[VEBIAN] -EPROBE_DEFER detected! Poking deferred workqueue via dummy device...\n");
                 
-                pwr_rc = vebian_force_wifi_power();
-                pr_err("[VEBIAN] Result of force wifi power: %d\n", pwr_rc);
- 
-         }
+                dummy_pdev = platform_device_register_simple("vebian_poker", -1, NULL, 0);
+                if (!IS_ERR(dummy_pdev)) {
+                    platform_device_unregister(dummy_pdev); 
+                }
+            }
+            
+            pr_err("[VEBIAN] Waiting for probe and firmware (PIL) to complete...\n");
+            
+            {
+                // вместо цикла ожидания hdd_ctx
+				int retries = 120; // 30 секунд
+				while (retries-- > 0) {
+					if (icnss_is_fw_ready()) // или проверь флаг напрямую
+						break;
+					pr_err("[VEBIAN] waiting for FW ready... (%d)\n", retries);
+					msleep(500);
+				}
+            }
 
+            if (hdd_ctx) {
+                int startup_rc = hdd_wlan_startup(hdd_ctx);
+                pr_err("[VEBIAN] Result of forced hdd_wlan_startup: %d\n", startup_rc);
+            }
+            else {
+                pr_err("[VEBIAN] crit error: hdd_ctx все еще NULL после таймаута. Пробуем штатный воркэраунд...\n");
+                // Если даже 5 секунд не помогли, значит icnss ждет пинка со стороны фреймворка
+                hdd_inform_wifi_on();
+            }
 
-	/*
-	 * Flush idle shutdown work for cases to synchronize the wifi on
-	 * during the idle shutdown.
-	 */
-	hdd_ctx = cds_get_context(QDF_MODULE_ID_HDD);
-	if (hdd_ctx)
-		hdd_psoc_idle_timer_stop(hdd_ctx);
+        } else {
+            pr_err("[VEBIAN] ОШИБКА: vebian_force_wifi_power вернул %d\n", pwr_rc);
+        }
+    } else {
+        hdd_ctx = cds_get_context(QDF_MODULE_ID_HDD);
+        if (!hdd_ctx) {
+            hdd_ctx = vebian_saved_hdd_ctx;
+        }
+    }
+
+    /*
+     * Flush idle shutdown work for cases to synchronize the wifi on
+     * during the idle shutdown.
+     */
+    if (hdd_ctx)
+        hdd_psoc_idle_timer_stop(hdd_ctx);
+
 exit:
-	if (turning_on)
-		hdd_inform_wifi_on();
+    if (turning_on)
+        hdd_inform_wifi_on();
 
-	return count;
+    return count;
 }
 
 /**
@@ -17746,7 +17818,8 @@ int hdd_driver_load(void)
 	struct osif_driver_sync *driver_sync;
 	QDF_STATUS status;
 	int errno;
-
+	int reg_rc;
+	
 	pr_err("%s: Loading driver v%s\n", WLAN_MODULE_NAME,
 	       g_wlan_driver_version);
 
@@ -17770,6 +17843,13 @@ int hdd_driver_load(void)
 		hdd_err("Failed to init HDD; errno:%d", errno);
 		goto trans_stop;
 	}
+
+	vebian_saved_hdd_ctx = cds_get_context(QDF_MODULE_ID_HDD);
+    if (vebian_saved_hdd_ctx) {
+        pr_err("[VEBIAN] hdd_ctx successfully intercepted inside hdd_driver_load!\n");
+    } else {
+        pr_err("[VEBIAN] WARNING: cds_get_context returned NULL inside hdd_driver_load\n");
+    }
 
 	status = hdd_component_init();
 	if (QDF_IS_STATUS_ERROR(status)) {
@@ -17804,31 +17884,33 @@ int hdd_driver_load(void)
 	osif_driver_sync_trans_stop(driver_sync);
 
 	/* psoc probe can happen in registration; do after 'load' transition */
-	errno = wlan_hdd_register_driver();
-	if (errno) {
-		hdd_err("Failed to register driver; errno:%d", errno);
-		goto pld_deinit;
+
+	reg_rc = wlan_hdd_register_driver();
+	pr_err("[VEBIAN] wlan_hdd_register_driver returned: %d\n", reg_rc);
+	if (reg_rc) {
+		pr_err("[VEBIAN] wlan_hdd_register_driver FAILED (%d)\n", reg_rc);
 	}
+	errno = 0;
 
 	hdd_loaded = true;
 	hdd_debug("%s: driver loaded", WLAN_MODULE_NAME);
 
 	return 0;
 
-pld_deinit:
-	status = osif_driver_sync_trans_start(&driver_sync);
-	QDF_BUG(QDF_IS_STATUS_SUCCESS(status));
+// pld_deinit:
+// 	status = osif_driver_sync_trans_start(&driver_sync);
+// 	QDF_BUG(QDF_IS_STATUS_SUCCESS(status));
 
-	osif_driver_sync_unregister();
-	osif_driver_sync_wait_for_ops(driver_sync);
+// 	osif_driver_sync_unregister();
+// 	osif_driver_sync_wait_for_ops(driver_sync);
 
-	hdd_driver_mode_change_unregister();
-	pld_deinit();
+// 	hdd_driver_mode_change_unregister();
+// 	pld_deinit();
 
-	hdd_start_complete(errno);
-	/* Wait for any ref taken on /dev/wlan to be released */
-	while (qdf_atomic_read(&wlan_hdd_state_fops_ref))
-		;
+// 	hdd_start_complete(errno);
+// 	/* Wait for any ref taken on /dev/wlan to be released */
+// 	while (qdf_atomic_read(&wlan_hdd_state_fops_ref))
+// 		;
 wakelock_destroy:
 	qdf_wake_lock_destroy(&wlan_wake_lock);
 comp_deinit:
@@ -17945,11 +18027,18 @@ EXPORT_SYMBOL(hdd_driver_unload);
 #ifdef FEATURE_WLAN_RESIDENT_DRIVER
 static int hdd_module_init(void)
 {
+	/* [VEBIAN HACK]: Глушим RESIDENT ветку для изоляции тестов IPA */
+	// pr_info("[VEBIAN] hdd_module_init: FEATURE_WLAN_RESIDENT_DRIVER is defined. Forcing -ENODEV\n");
+	// return -ENODEV;
 	return 0;
 }
 #else
 static int hdd_module_init(void)
 {
+	/* [VEBIAN HACK]: Глушим стандартную ветку для изоляции тестов IPA */
+	// pr_info("[VEBIAN] hdd_module_init: Standard branch. Forcing -ENODEV\n");
+	// return -ENODEV;
+
 	int ret;
 
 	ret = wlan_hdd_state_ctrl_param_create();

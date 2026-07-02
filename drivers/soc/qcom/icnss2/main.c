@@ -1185,10 +1185,22 @@ static int icnss_driver_event_register_driver(struct icnss_priv *priv,
 	int ret = 0;
 	int probe_cnt = 0;
 
+	pr_err("[VEBIAN] Delaying wlan probe for 10 seconds to let IPA settle...\n");
+    msleep(10000);
+
 	if (priv->ops)
 		return -EEXIST;
 
 	priv->ops = data;
+
+	// if (priv) {
+    //     set_bit(SKIP_QMI, &priv->ctrl_params.quirks);
+    //     set_bit(ICNSS_FW_READY, &priv->state);
+    //     clear_bit(ICNSS_FW_DOWN, &priv->state);
+	// 	pr_err("[VEBIAN] hack FW is ready, мамой клянусь");
+    // }
+
+	
 
 	if (test_bit(SKIP_QMI, &priv->ctrl_params.quirks))
 		set_bit(ICNSS_FW_READY, &priv->state);
@@ -3735,7 +3747,7 @@ static int icnss_msa_dt_parse(struct icnss_priv *priv)
 	if (np) {
 		addrp = of_get_address(np, 0, &prop_size, NULL);
 		if (!addrp) {
-			icnss_pr_err("Failed to get assigned-addresses or property\n");
+			pr_err("[VEBIAN] Failed to get assigned-addresses or property\n");
 			ret = -EINVAL;
 			of_node_put(np);
 			goto out;
@@ -3743,7 +3755,7 @@ static int icnss_msa_dt_parse(struct icnss_priv *priv)
 
 		priv->msa_pa = of_translate_address(np, addrp);
 		if (priv->msa_pa == OF_BAD_ADDR) {
-			icnss_pr_err("Failed to translate MSA PA from device-tree\n");
+			pr_err("[VEBIAN] Failed to translate MSA PA from device-tree\n");
 			ret = -EINVAL;
 			of_node_put(np);
 			goto out;
@@ -3754,7 +3766,7 @@ static int icnss_msa_dt_parse(struct icnss_priv *priv)
 		priv->msa_va = memremap(priv->msa_pa,
 					(unsigned long)prop_size, MEMREMAP_WT);
 		if (!priv->msa_va) {
-			icnss_pr_err("MSA PA ioremap failed: phy addr: %pa\n",
+			pr_err("[VEBIAN] MSA PA ioremap failed: phy addr: %pa\n",
 				     &priv->msa_pa);
 			ret = -EINVAL;
 			goto out;
@@ -3764,7 +3776,7 @@ static int icnss_msa_dt_parse(struct icnss_priv *priv)
 		ret = of_property_read_u32(dev->of_node, "qcom,wlan-msa-memory",
 					   &priv->msa_mem_size);
 		if (ret || priv->msa_mem_size == 0) {
-			icnss_pr_err("Fail to get MSA Memory Size: %u ret: %d\n",
+			pr_err("[VEBIAN] Fail to get MSA Memory Size: %u ret: %d\n",
 				     priv->msa_mem_size, ret);
 			goto out;
 		}
@@ -3773,20 +3785,24 @@ static int icnss_msa_dt_parse(struct icnss_priv *priv)
 				priv->msa_mem_size, &priv->msa_pa, GFP_KERNEL);
 
 		if (!priv->msa_va) {
-			icnss_pr_err("DMA alloc failed for MSA\n");
+			pr_err("[VEBIAN] DMA alloc failed for MSA\n");
 			ret = -ENOMEM;
 			goto out;
 		}
 	}
 
-	icnss_pr_dbg("MSA pa: %pa, MSA va: 0x%pK MSA Memory Size: 0x%x\n",
+	pr_err("[VEBIAN] MSA pa: %pa, MSA va: 0x%pK MSA Memory Size: 0x%x\n",
 		     &priv->msa_pa, (void *)priv->msa_va, priv->msa_mem_size);
 
 	priv->use_prefix_path = of_property_read_bool(priv->pdev->dev.of_node,
 						      "qcom,fw-prefix");
+
+	pr_err("[VEBIAN] MSA pa: %pa, va: 0x%pK, size: 0x%x\n",
+    &priv->msa_pa, (void *)priv->msa_va, priv->msa_mem_size);
 	return 0;
 
 out:
+	pr_err("[VEBIAN] msa_dt_parse ret: %d", ret);
 	return ret;
 }
 
@@ -4061,19 +4077,22 @@ static int icnss_probe(struct platform_device *pdev)
 	icnss_read_device_configs(priv);
 
 	ret = icnss_resource_parse(priv);
-	if (ret)
+	if (ret){
 	    pr_err("[VEBIAN] icnss_resource_parse");
 		goto out_reset_drvdata;
+	}
 
 	ret = icnss_msa_dt_parse(priv);
-	if (ret)
+	if (ret){
 	    pr_err("[VEBIAN] msa_dt_parse");
 		goto out_free_resources;
+	}
 
 	ret = icnss_smmu_dt_parse(priv);
-	if (ret)
+	if (ret){
 		pr_err("[VEBIAN] smmu_dt_parse");
 		goto out_free_resources;
+	}
 
 	device_enable_async_suspend(dev);
 
@@ -4458,7 +4477,7 @@ static const struct dev_pm_ops icnss_pm_ops = {
 			   icnss_pm_runtime_idle)
 };
 
-static struct platform_driver icnss_driver = {
+struct platform_driver icnss_driver = {
 	.probe  = icnss_probe,
 	.remove = icnss_remove,
 	.driver = {
@@ -4467,6 +4486,8 @@ static struct platform_driver icnss_driver = {
 		.of_match_table = icnss_dt_match,
 	},
 };
+
+EXPORT_SYMBOL(icnss_driver);
 
 static int __init icnss_initialize(void)
 {

@@ -147,7 +147,7 @@ static int modem_shutdown(const struct subsys_desc *subsys, bool force_stop)
 {
 	struct modem_data *drv = subsys_to_drv(subsys);
 	unsigned long ret;
-
+	pr_err("[VEBIAN] info MODEM modem_poweroff called");
 	if (drv->is_not_loadable)
 		return 0;
 
@@ -177,6 +177,8 @@ static int modem_powerup(const struct subsys_desc *subsys)
 {
 	struct modem_data *drv = subsys_to_drv(subsys);
 	int ret = 0;
+
+	pr_err("[VEBIAN] info MODEM modem_powerup called");
 
 	if (drv->is_not_loadable)
 		return 0;

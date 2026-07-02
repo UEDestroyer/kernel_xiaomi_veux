@@ -649,7 +649,7 @@ QDF_STATUS cds_open(struct wlan_objmgr_psoc *psoc)
 
 	cds_ctx = cds_get_context(QDF_MODULE_ID_QDF);
 	if (!cds_ctx) {
-		cds_alert("Trying to open CDS without a PreOpen");
+		pr_err("[VEBIAN] Trying to open CDS without a PreOpen");
 		return QDF_STATUS_E_FAILURE;
 	}
 
@@ -661,7 +661,7 @@ QDF_STATUS cds_open(struct wlan_objmgr_psoc *psoc)
 
 	hdd_ctx = gp_cds_context->hdd_context;
 	if (!hdd_ctx || !hdd_ctx->config) {
-		cds_err("Hdd Context is Null");
+		pr_err("[VEBIAN] Hdd Context is Null");
 
 		status = QDF_STATUS_E_FAILURE;
 		return status;
@@ -669,7 +669,7 @@ QDF_STATUS cds_open(struct wlan_objmgr_psoc *psoc)
 
 	status = dispatcher_enable();
 	if (QDF_IS_STATUS_ERROR(status)) {
-		cds_err("Failed to enable dispatcher; status:%d", status);
+		pr_err("[VEBIAN] Failed to enable dispatcher; status:%d", status);
 		return status;
 	}
 
@@ -678,13 +678,13 @@ QDF_STATUS cds_open(struct wlan_objmgr_psoc *psoc)
 				&gp_cds_context->qdf_sched,
 				sizeof(cds_sched_context));
 	if (QDF_IS_STATUS_ERROR(status)) {
-		cds_alert("Failed to open CDS Scheduler");
+		pr_err("[VEBIAN] Failed to open CDS Scheduler");
 		goto err_dispatcher_disable;
 	}
 
 	scn = cds_get_context(QDF_MODULE_ID_HIF);
 	if (!scn) {
-		cds_alert("scn is null!");
+		pr_err("[VEBIAN] scn is null!");
 
 		status = QDF_STATUS_E_FAILURE;
 		goto err_sched_close;
@@ -692,7 +692,7 @@ QDF_STATUS cds_open(struct wlan_objmgr_psoc *psoc)
 
 	cds_cfg = cds_get_ini_config();
 	if (!cds_cfg) {
-		cds_err("Cds config is NULL");
+		pr_err("[VEBIAN] Cds config is NULL");
 
 		status = QDF_STATUS_E_FAILURE;
 		goto err_sched_close;
@@ -704,7 +704,7 @@ QDF_STATUS cds_open(struct wlan_objmgr_psoc *psoc)
 	ol_ctx = cds_get_context(QDF_MODULE_ID_BMI);
 	status = bmi_download_firmware(ol_ctx);
 	if (QDF_IS_STATUS_ERROR(status)) {
-		cds_alert("BMI FIALED status:%d", status);
+		pr_err("[VEBIAN] BMI FIALED status:%d", status);
 		goto err_bmi_close;
 	}
 
@@ -723,7 +723,7 @@ QDF_STATUS cds_open(struct wlan_objmgr_psoc *psoc)
 	gp_cds_context->htc_ctx =
 		htc_create(scn, &htcInfo, qdf_ctx, cds_get_conparam());
 	if (!gp_cds_context->htc_ctx) {
-		cds_alert("Failed to Create HTC");
+		pr_err("[VEBIAN] Failed to Create HTC");
 
 		status = QDF_STATUS_E_FAILURE;
 		goto err_bmi_close;
@@ -732,7 +732,7 @@ QDF_STATUS cds_open(struct wlan_objmgr_psoc *psoc)
 
 	status = bmi_done(ol_ctx);
 	if (QDF_IS_STATUS_ERROR(status)) {
-		cds_alert("Failed to complete BMI phase");
+		pr_err("[VEBIAN] Failed to complete BMI phase");
 		goto err_htc_close;
 	}
 
@@ -740,7 +740,7 @@ QDF_STATUS cds_open(struct wlan_objmgr_psoc *psoc)
 	status = wma_open(psoc, hdd_update_tgt_cfg, cds_cfg,
 			  hdd_ctx->target_type);
 	if (QDF_IS_STATUS_ERROR(status)) {
-		cds_alert("Failed to open WMA module");
+		pr_err("[VEBIAN] Failed to open WMA module");
 		goto err_htc_close;
 	}
 
@@ -759,7 +759,7 @@ QDF_STATUS cds_open(struct wlan_objmgr_psoc *psoc)
 	HTCHandle = cds_get_context(QDF_MODULE_ID_HTC);
 	gp_cds_context->cfg_ctx = NULL;
 	if (!HTCHandle) {
-		cds_alert("HTCHandle is null!");
+		pr_err("[VEBIAN] HTCHandle is null!");
 
 		status = QDF_STATUS_E_FAILURE;
 		goto err_wma_close;
@@ -767,7 +767,7 @@ QDF_STATUS cds_open(struct wlan_objmgr_psoc *psoc)
 
 	status = htc_wait_target(HTCHandle);
 	if (QDF_IS_STATUS_ERROR(status)) {
-		cds_alert("Failed to complete BMI phase. status: %d", status);
+		pr_err("[VEBIAN] Failed to complete BMI phase. status: %d", status);
 		QDF_BUG(status == QDF_STATUS_E_NOMEM || cds_is_fw_down());
 
 		goto err_wma_close;
@@ -798,6 +798,7 @@ QDF_STATUS cds_open(struct wlan_objmgr_psoc *psoc)
 					  gp_cds_context->qdf_ctx,
 					  &dp_ol_if_ops)) {
 				status = QDF_STATUS_E_FAILURE;
+				pr_err("[VEBIAN] err dp_ol_if_ops");
 				goto err_soc_detach;
 			}
 	}
@@ -828,7 +829,7 @@ QDF_STATUS cds_open(struct wlan_objmgr_psoc *psoc)
 			  gp_cds_context->hdd_context, cds_cfg);
 
 	if (QDF_STATUS_SUCCESS != status) {
-		cds_alert("Failed to open MAC");
+		pr_err("[VEBIAN] Failed to open MAC");
 		goto err_soc_deinit;
 	}
 	gp_cds_context->mac_context = mac_handle;
@@ -836,7 +837,7 @@ QDF_STATUS cds_open(struct wlan_objmgr_psoc *psoc)
 	/* Now proceed to open the SME */
 	status = sme_open(mac_handle);
 	if (QDF_IS_STATUS_ERROR(status)) {
-		cds_alert("Failed to open SME");
+		pr_err("[VEBIAN] Failed to open SME");
 		goto err_mac_close;
 	}
 
@@ -844,7 +845,7 @@ QDF_STATUS cds_open(struct wlan_objmgr_psoc *psoc)
 
 	status = dispatcher_psoc_open(psoc);
 	if (QDF_IS_STATUS_ERROR(status)) {
-		cds_alert("Failed to open PSOC Components");
+		pr_err("[VEBIAN] Failed to open PSOC Components");
 		goto deregister_modules;
 	}
 

@@ -118,11 +118,12 @@ QDF_STATUS bmi_done(struct ol_context *ol_ctx)
 {
 	QDF_STATUS status = QDF_STATUS_SUCCESS;
 
-	if (NO_BMI)
+	if (NO_BMI){
 		return QDF_STATUS_SUCCESS;
-
+	}
+	
 	if (!ol_ctx) {
-		BMI_ERR("%s: null context", __func__);
+		pr_err("[VEBIAN] %s: null context", __func__);
 		return QDF_STATUS_E_NOMEM;
 	}
 	hif_claim_device(ol_ctx->scn);
@@ -132,7 +133,7 @@ QDF_STATUS bmi_done(struct ol_context *ol_ctx)
 
 	status = bmi_done_local(ol_ctx);
 	if (status != QDF_STATUS_SUCCESS)
-		BMI_ERR("BMI_DONE Failed status:%d", status);
+		pr_err("[VEBIAN]BMI_DONE Failed status:%d", status);
 
 	return status;
 }

@@ -81,9 +81,22 @@ set_config "CONFIG_PROC_FS"                   "CONFIG_PROC_FS=y"
 set_config "CONFIG_SYSFS"                     "CONFIG_SYSFS=y"
 set_config "CONFIG_INOTIFY_USER"              "CONFIG_INOTIFY_USER=y"
 
+# debug fs kotak
+set_config "CONFIG_MSM_SDE_ROTATOR"              "CONFIG_MSM_SDE_ROTATOR=n"
+set_config "CONFIG_DEBUG_FS"                     "CONFIG_DEBUG_FS=n"
+set_config "CONFIG_MSM_SDE_ROTATOR_EVTLOG"                     "CONFIG_MSM_SDE_ROTATOR_EVTLOG=n"
+set_config "CONFIG_MSM_SDE_ROTATOR_DEBUG"                     "CONFIG_MSM_SDE_ROTATOR_DEBUG=n"
+
+# CONFIG_QCOM_RMTFS_MEM
+
+set_config "CONFIG_UIO_PDRV_GENIRQ"              "CONFIG_UIO_PDRV_GENIRQ=y"
+set_config "CONFIG_UIO_DMEM_GENIRQ"              "CONFIG_UIO_DMEM_GENIRQ=y"
+set_config "CONFIG_QCOM_RMTFS_MEM"              "CONFIG_QCOM_RMTFS_MEM=y"
+
 # ts
 set_config "CONFIG_TOUCHSCREEN_FTS" "CONFIG_TOUCHSCREEN_FTS=y"
 
+set_config "CONFIG_CNSS_QCA6750" "CONFIG_CNSS_QCA6750=y"
 
 #usb
 # --- USB ECM конфигурация ---
@@ -101,9 +114,17 @@ set_config "CONFIG_TOUCHSCREEN_FTS" "CONFIG_TOUCHSCREEN_FTS=y"
 # 4. Включаем сам драйвер функции ECM
 ./scripts/config --file "$TARGET_CONFIG" --enable CONFIG_USB_F_ECM
 
+# ебаный модем
+
+./scripts/config --file "$TARGET_CONFIG" --enable MSM_PIL_MSS_QDSP6V5
+
+
+#echo -e 'CONFIG_QCA_CLD_WLAN=m \nCONFIG_QCA_CLD_WLAN_PROFILE="default"' >> out/.config
+
 # Пересчитываем зависимости после патчинга
 echo "[KERNEL-BUILD] Resolving config dependencies (olddefconfig)..."
 make olddefconfig O=out ARCH=arm64 CC=clang LLVM=1 LLVM_IAS=1
+
 
 echo "[KERNEL-BUILD] Config patched successfully!"
 
@@ -111,15 +132,17 @@ echo "[KERNEL-BUILD] Config patched successfully!"
 
 # === 5. КОМПИЛЯЦИЯ ===
 echo "[KERNEL-BUILD] Compiling..."
-make -j$(nproc) O=out \
-    ARCH=arm64 \
-    CC=clang \
-    CLANG_TRIPLE=aarch64-linux-android- \
-    CROSS_COMPILE=aarch64-linux-android- \
-    CROSS_COMPILE_ARM32=arm-linux-gnueabi- \
-    LD=ld.lld \
-    LLVM=1 \
-    LLVM_IAS=1  >/log.txt 2>/log.txt | tee /log.txt
+#make -j$(nproc) O=out \
+#    ARCH=arm64 \
+#    CC=clang \
+#    CLANG_TRIPLE=aarch64-linux-android- \
+#    CROSS_COMPILE=aarch64-linux-android- \
+#    CROSS_COMPILE_ARM32=arm-linux-gnueabi- \
+#    LD=ld.lld \
+#    LLVM=1 \
+#    LLVM_IAS=1  >/log.txt 2>/log.txt | tee /log.txt
+
+build.sh >/log.txt 2>/log.txt | tee /log.txt
 
 # === 6. РЕЗУЛЬТАТ ===
 EXPECTED_IMAGE="out/arch/arm64/boot/Image"
