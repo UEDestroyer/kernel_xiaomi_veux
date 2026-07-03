@@ -300,9 +300,8 @@ int pld_register_driver(struct pld_driver_ops *ops)
 
 	ret = pld_snoc_register_driver();
 	if (ret) {
-		pr_err("[VEBIAN] Fail to register snoc driver, ret: %d. IGNORED!\n", ret);
-    	ret = 0;       
-		//goto fail_snoc; commented 
+		pr_err("Fail to register snoc driver\n");
+		goto fail_snoc;
 	}
 	pld_context->pld_driver_state |= PLD_SNOC_REGISTERED;
 
@@ -353,8 +352,8 @@ fail_snoc_fw_sim:
 	pld_sdio_unregister_driver();
 fail_sdio:
 	pld_snoc_unregister_driver();
-//fail_snoc:
-//	pld_pcie_unregister_driver();
+fail_snoc:
+	pld_pcie_unregister_driver();
 fail_pcie:
 	pld_context->pld_driver_state = 0;
 	pld_context->ops = NULL;

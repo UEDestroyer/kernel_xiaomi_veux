@@ -90,19 +90,15 @@ static int pld_snoc_probe(struct device *dev)
 	pld_context = pld_get_global_context();
 	if (!pld_context) {
 		ret = -ENODEV;
-		pr_err("[VEBIAN] pld_snoc_probe failed at line %d, ret=%d\n", __LINE__, ret);
 		goto out;
 	}
 
 	ret = pld_add_dev(pld_context, dev, NULL, PLD_BUS_TYPE_SNOC);
-	if (ret){
-		pr_err("[VEBIAN] pld_snoc_probe failed at line %d, ret=%d\n", __LINE__, ret);
+	if (ret)
 		goto out;
-	}
 
-	ret = pld_context->ops->probe(dev, PLD_BUS_TYPE_SNOC, NULL, NULL);
-	pr_err("[VEBIAN] ops->probe returned: %d\n", ret);
-	return ret;
+	return pld_context->ops->probe(dev, PLD_BUS_TYPE_SNOC,
+				       NULL, NULL);
 
 out:
 	return ret;
@@ -444,11 +440,9 @@ int pld_snoc_wlan_enable(struct device *dev, struct pld_wlan_enable_cfg *config,
 	struct icnss_wlan_enable_cfg cfg;
 	enum icnss_driver_mode icnss_mode;
 
-	if (!dev){
-		pr_err("[VEBIAN] FATAL: pld_snoc_wlan_enable called with NULL dev!\n");
+	if (!dev)
 		return -ENODEV;
-	}
-	
+
 	cfg.num_ce_tgt_cfg = config->num_ce_tgt_cfg;
 	cfg.ce_tgt_cfg = (struct ce_tgt_pipe_cfg *)
 		config->ce_tgt_cfg;
@@ -486,10 +480,8 @@ int pld_snoc_wlan_enable(struct device *dev, struct pld_wlan_enable_cfg *config,
  */
 int pld_snoc_wlan_disable(struct device *dev, enum pld_driver_mode mode)
 {
-	if (!dev){
-		pr_err("[VEBIAN] FATAL: pld_snoc_wlan_disable called with NULL dev!\n");
+	if (!dev)
 		return -ENODEV;
-	}
 
 	return icnss_wlan_disable(dev, ICNSS_OFF);
 }
@@ -509,17 +501,12 @@ int pld_snoc_get_soc_info(struct device *dev, struct pld_soc_info *info)
 	int errno;
 	struct icnss_soc_info icnss_info = {0};
 
-	if (!info || !dev){
-		pr_err("[VEBIAN] FATAL: pld_snoc_get_soc_info called with NULL dev or NULL info!\n");
+	if (!info || !dev)
 		return -ENODEV;
-	}
 
 	errno = icnss_get_soc_info(dev, &icnss_info);
-	if (errno){
-		pr_err("[VEBIAN] FATAL:icnss_get_soc_info : %d!\n",errno);
-
+	if (errno)
 		return errno;
-	}
 
 	info->v_addr = icnss_info.v_addr;
 	info->p_addr = icnss_info.p_addr;

@@ -68,4 +68,9 @@
 		disable-thermal-zone;
 		status = "disabled";
 	};
+
+	rear-cam-therm-usr {
+		disable-thermal-zone;
+		status = "disabled";
+	};
 };

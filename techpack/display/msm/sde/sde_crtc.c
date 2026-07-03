@@ -4941,7 +4941,7 @@ static int _sde_crtc_check_zpos(struct drm_crtc_state *state,
 	z_pos = -1;
 	layout = SDE_LAYOUT_NONE;
 	for (i = 0; i < cnt; i++) {
-		SDE_ERROR("[VEBIAN] plane %d stage=%d\n", i, pstates[i].stage);
+		//SDE_DBG("[VEBIAN] plane %d stage=%d\n", i, pstates[i].stage);
 		/* reset counts at every new blend stage */
 		if (pstates[i].stage != z_pos ||
 				pstates[i].sde_pstate->layout != layout) {

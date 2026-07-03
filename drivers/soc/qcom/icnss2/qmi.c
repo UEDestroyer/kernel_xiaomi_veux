@@ -1410,7 +1410,7 @@ int wlfw_wlan_mode_send_sync_msg(struct icnss_priv *priv,
 			       WLFW_WLAN_MODE_REQ_MSG_V01_MAX_MSG_LEN,
 			       wlfw_wlan_mode_req_msg_v01_ei, req);
 	if (ret < 0) {
-		qmi_txn_cancel(&txn);return 0;
+		qmi_txn_cancel(&txn);
 		icnss_qmi_fatal_err("Fail to send Mode req %d\n", ret);
 		goto out;
 	}
@@ -1581,8 +1581,7 @@ int wlfw_wlan_cfg_send_sync_msg(struct icnss_priv *priv,
 			       wlfw_wlan_cfg_req_msg_v01_ei, req);
 	if (ret < 0) {
 		qmi_txn_cancel(&txn);
-		//icnss_qmi_fatal_err("Fail to send Config req %d\n", ret);
-		pr_err("[VEBIAN] Oh nein, хуй сосни");
+		icnss_qmi_fatal_err("Fail to send Config req %d\n", ret);
 		goto out;
 	}
 
@@ -1718,8 +1717,7 @@ int wlfw_ini_send_sync_msg(struct icnss_priv *priv, uint8_t fw_log_mode)
 			       wlfw_ini_req_msg_v01_ei, req);
 	if (ret < 0) {
 		qmi_txn_cancel(&txn);
-		//icnss_qmi_fatal_err("Fail to send INI req %d\n", ret);
-		pr_err("[VEBIAN] and what? fick dick");
+		icnss_qmi_fatal_err("Fail to send INI req %d\n", ret);
 		goto out;
 	}
 

@@ -135,7 +135,7 @@ static QDF_STATUS hif_snoc_get_soc_info(struct hif_softc *scn)
 
 	ret = pld_get_soc_info(scn->qdf_dev->dev, &soc_info);
 	if (ret < 0) {
-		pr_err("[VEBIAN] pld_get_soc_info error = %d", ret);
+		hif_err("pld_get_soc_info error = %d", ret);
 		return QDF_STATUS_E_FAILURE;
 	}
 
@@ -160,31 +160,24 @@ int hif_snoc_bus_configure(struct hif_softc *scn)
 	uint8_t wake_ce_id;
 
 	ret = hif_snoc_get_soc_info(scn);
-	if (ret){
-		pr_err("[VEBIAN] soc_info error = %d", ret);
+	if (ret)
 		return ret;
-	}
+
 	hif_ce_prepare_config(scn);
 
 	ret = hif_wlan_enable(scn);
 	if (ret) {
-		pr_err("[VEBIAN] hif_wlan_enable error = %d", ret);
+		hif_err("hif_wlan_enable error = %d", ret);
 		return ret;
 	}
 
-	
 	ret = hif_config_ce(scn);
-	if (ret) {
-		pr_err("[VEBIAN] hif_config_ce failed: %d\n", ret);
+	if (ret)
 		goto wlan_disable;
-	}
-
 
 	ret = hif_get_wake_ce_id(scn, &wake_ce_id);
-	if (ret) {
-		pr_err("[VEBIAN] hif_get_wake_ce_id failed: %d\n", ret);
+	if (ret)
 		goto unconfig_ce;
-	}
 
 	scn->wake_irq = pld_get_irq(scn->qdf_dev->dev, wake_ce_id);
 	scn->wake_irq_type = HIF_PM_CE_WAKE;
@@ -275,28 +268,28 @@ QDF_STATUS hif_snoc_enable_bus(struct hif_softc *ol_sc,
 	int target_type;
 
 	if (!ol_sc) {
-		pr_err("[VEBIAN] hif_ctx is NULL");
+		hif_err("hif_ctx is NULL");
 		return QDF_STATUS_E_NOMEM;
 	}
 
 	ret = hif_set_dma_coherent_mask(ol_sc->qdf_dev);
 	if (ret) {
-		pr_err("[VEBIAN] Failed to set dma mask error = %d", ret);
+		hif_err("Failed to set dma mask error = %d", ret);
 		return qdf_status_from_os_return(ret);
 	}
 
 	ret = qdf_device_init_wakeup(ol_sc->qdf_dev, true);
 	if (ret == -EEXIST)
-		pr_err("[VEBIAN] device_init_wakeup already done");
+		hif_warn("device_init_wakeup already done");
 	else if (ret) {
-		pr_err("[VEBIAN] ignored device_init_wakeup: err= %d", ret);
-		//return qdf_status_from_os_return(ret);
+		hif_err("device_init_wakeup: err= %d", ret);
+		return qdf_status_from_os_return(ret);
 	}
 
 	ret = hif_snoc_get_target_type(ol_sc, dev, bdev, bid,
 			&hif_type, &target_type);
 	if (ret < 0) {
-		pr_err("[VEBIAN] Invalid device id/revision_id");
+		hif_err("Invalid device id/revision_id");
 		return QDF_STATUS_E_FAILURE;
 	}
 

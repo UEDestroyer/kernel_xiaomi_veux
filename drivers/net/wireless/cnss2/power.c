@@ -979,7 +979,6 @@ int cnss_gpio_get_value(struct cnss_plat_data *plat_priv, int gpio_num)
 int cnss_power_on_device(struct cnss_plat_data *plat_priv, bool reset)
 {
 	int ret = 0;
-        pr_err("[VEBIAN] cnss_power_on_device called (reset: %d)\n", reset);
 	bool dsp_link_disabled = false;
 	int retry_count = 0;
 
@@ -1050,18 +1049,14 @@ int cnss_power_on_device(struct cnss_plat_data *plat_priv, bool reset)
 	}
 
 	plat_priv->powered_on = true;
-        
-        pr_err("[VEBIAN] cnss_power_on_device returned: 0\n");
+
 	return 0;
 
 clk_off:
-        pr_err("[VEBIAN] cnss_power_on_device called cnss_clk_off");
 	cnss_clk_off(plat_priv, &plat_priv->clk_list);
 vreg_off:
-        pr_err("[VEBIAN] cnss_power_on_device called cnss_vreg_off_type");
 	cnss_vreg_off_type(plat_priv, CNSS_VREG_PRIM);
 out:
-        pr_err("[VEBIAN] cnss_power_on_device returned: %d\n", ret);
 	return ret;
 }
 
@@ -1300,7 +1295,6 @@ int cnss_enable_int_pow_amp_vreg(struct cnss_plat_data *plat_priv)
 int cnss_dev_specific_power_on(struct cnss_plat_data *plat_priv)
 {
 	int ret;
-        pr_err("[VEBIAN] cnss_dev_specific_power_on called\n");
 
 	if (!plat_priv->is_converged_dt)
 		return 0;
@@ -1310,7 +1304,5 @@ int cnss_dev_specific_power_on(struct cnss_plat_data *plat_priv)
 		return ret;
 
 	plat_priv->powered_on = false;
-
-        pr_err("[VEBIAN] cnss_dev_specific_power_on returned: %d\n", ret);
 	return cnss_power_on_device(plat_priv, false);
 }

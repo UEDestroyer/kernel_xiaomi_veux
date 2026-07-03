@@ -374,8 +374,9 @@ static enum qdf_bus_type to_bus_type(enum pld_bus_type bus_type)
 		return QDF_BUS_TYPE_NONE;
 	}
 }
-int hdd_hif_open_ctx(struct device *dev, void *bdev, const struct hif_bus_id *bid,
-			enum qdf_bus_type bus_type, bool reinit, struct hdd_context *hdd_ctx_in)
+
+int hdd_hif_open(struct device *dev, void *bdev, const struct hif_bus_id *bid,
+			enum qdf_bus_type bus_type, bool reinit)
 {
 	QDF_STATUS status;
 	int ret = 0;
@@ -383,10 +384,10 @@ int hdd_hif_open_ctx(struct device *dev, void *bdev, const struct hif_bus_id *bi
 	qdf_device_t qdf_ctx = cds_get_context(QDF_MODULE_ID_QDF_DEVICE);
 	struct hif_driver_state_callbacks cbk;
 	uint32_t mode = cds_get_conparam();
-	struct hdd_context *hdd_ctx = hdd_ctx_in;
+	struct hdd_context *hdd_ctx = cds_get_context(QDF_MODULE_ID_HDD);
 
 	if (!hdd_ctx) {
-		pr_err("[VEBIAN] hdd_ctx error");
+		hdd_err("hdd_ctx error");
 		return -EFAULT;
 	}
 
@@ -394,19 +395,19 @@ int hdd_hif_open_ctx(struct device *dev, void *bdev, const struct hif_bus_id *bi
 
 	hif_ctx = hif_open(qdf_ctx, mode, bus_type, &cbk, hdd_ctx->psoc);
 	if (!hif_ctx) {
-		pr_err("[VEBIAN] hif_open error");
+		hdd_err("hif_open error");
 		return -ENOMEM;
 	}
 
 	ret = hdd_init_cds_hif_context(hif_ctx);
 	if (ret) {
-		pr_err("[VEBIAN] Failed to set global HIF CDS Context err: %d", ret);
+		hdd_err("Failed to set global HIF CDS Context err: %d", ret);
 		goto err_hif_close;
 	}
 
 	status = hdd_hif_register_shutdown_notifier(hif_ctx);
 	if (status != QDF_STATUS_SUCCESS) {
-		pr_err("[VEBIAN] Shutdown notifier register failed: %d", status);
+		hdd_err("Shutdown notifier register failed: %d", status);
 		goto err_deinit_hif_context;
 	}
 
@@ -416,7 +417,7 @@ int hdd_hif_open_ctx(struct device *dev, void *bdev, const struct hif_bus_id *bi
 			    (reinit == true) ?  HIF_ENABLE_TYPE_REINIT :
 			    HIF_ENABLE_TYPE_PROBE);
 	if (!QDF_IS_STATUS_SUCCESS(status)) {
-		pr_err("[VEBIAN] hif_enable failed status: %d, reinit: %d",
+		hdd_err("hif_enable failed status: %d, reinit: %d",
 			status, reinit);
 
 		ret = qdf_status_to_os_return(status);
@@ -424,11 +425,11 @@ int hdd_hif_open_ctx(struct device *dev, void *bdev, const struct hif_bus_id *bi
 	} else {
 		cds_set_target_ready(true);
 		ret = hdd_napi_create();
-		pr_err("[VEBIAN] hdd_napi_create returned: %d", ret);
+		hdd_debug("hdd_napi_create returned: %d", ret);
 		if (ret == 0)
-			pr_err("[VEBIAN] NAPI: no instances are created");
+			hdd_debug("NAPI: no instances are created");
 		else if (ret < 0) {
-			pr_err("[VEBIAN] API creation error, rc: 0x%x, reinit: %d",
+			hdd_err("NAPI creation error, rc: 0x%x, reinit: %d",
 				ret, reinit);
 			ret = -EFAULT;
 			goto mark_target_not_ready;
@@ -458,95 +459,6 @@ err_hif_close:
 	hif_close(hif_ctx);
 	return ret;
 }
-int hdd_hif_open(struct device *dev, void *bdev, const struct hif_bus_id *bid,
-			enum qdf_bus_type bus_type, bool reinit)
-{
-	return hdd_hif_open_ctx(dev,bdev,bid,bus_type,reinit,cds_get_context(QDF_MODULE_ID_HDD));
-}
-// int hdd_hif_open(struct device *dev, void *bdev, const struct hif_bus_id *bid,
-// 			enum qdf_bus_type bus_type, bool reinit)
-// {
-// 	QDF_STATUS status;
-// 	int ret = 0;
-// 	struct hif_opaque_softc *hif_ctx;
-// 	qdf_device_t qdf_ctx = cds_get_context(QDF_MODULE_ID_QDF_DEVICE);
-// 	struct hif_driver_state_callbacks cbk;
-// 	uint32_t mode = cds_get_conparam();
-// 	struct hdd_context *hdd_ctx = cds_get_context(QDF_MODULE_ID_HDD);
-
-// 	if (!hdd_ctx) {
-// 		hdd_err("hdd_ctx error");
-// 		return -EFAULT;
-// 	}
-
-// 	hdd_hif_init_driver_state_callbacks(dev, &cbk);
-
-// 	hif_ctx = hif_open(qdf_ctx, mode, bus_type, &cbk, hdd_ctx->psoc);
-// 	if (!hif_ctx) {
-// 		hdd_err("hif_open error");
-// 		return -ENOMEM;
-// 	}
-
-// 	ret = hdd_init_cds_hif_context(hif_ctx);
-// 	if (ret) {
-// 		hdd_err("Failed to set global HIF CDS Context err: %d", ret);
-// 		goto err_hif_close;
-// 	}
-
-// 	status = hdd_hif_register_shutdown_notifier(hif_ctx);
-// 	if (status != QDF_STATUS_SUCCESS) {
-// 		hdd_err("Shutdown notifier register failed: %d", status);
-// 		goto err_deinit_hif_context;
-// 	}
-
-// 	hdd_hif_set_attribute(hif_ctx);
-
-// 	status = hif_enable(hif_ctx, dev, bdev, bid, bus_type,
-// 			    (reinit == true) ?  HIF_ENABLE_TYPE_REINIT :
-// 			    HIF_ENABLE_TYPE_PROBE);
-// 	if (!QDF_IS_STATUS_SUCCESS(status)) {
-// 		hdd_err("hif_enable failed status: %d, reinit: %d",
-// 			status, reinit);
-
-// 		ret = qdf_status_to_os_return(status);
-// 		goto err_deinit_hif_context;
-// 	} else {
-// 		cds_set_target_ready(true);
-// 		ret = hdd_napi_create();
-// 		hdd_debug("hdd_napi_create returned: %d", ret);
-// 		if (ret == 0)
-// 			hdd_debug("NAPI: no instances are created");
-// 		else if (ret < 0) {
-// 			hdd_err("NAPI creation error, rc: 0x%x, reinit: %d",
-// 				ret, reinit);
-// 			ret = -EFAULT;
-// 			goto mark_target_not_ready;
-// 		} else {
-// 			hdd_napi_event(NAPI_EVT_INI_FILE,
-// 				(void *)hdd_ctx->napi_enable);
-// 		}
-// 	}
-
-// 	hdd_hif_set_ce_max_yield_time(
-// 				hif_ctx, bus_type,
-// 				cfg_get(hdd_ctx->psoc,
-// 					CFG_DP_CE_SERVICE_MAX_YIELD_TIME));
-// 	ucfg_pmo_psoc_set_hif_handle(hdd_ctx->psoc, hif_ctx);
-// 	hif_set_ce_service_max_rx_ind_flush(hif_ctx,
-// 				cfg_get(hdd_ctx->psoc,
-// 					CFG_DP_CE_SERVICE_MAX_RX_IND_FLUSH));
-// 	return 0;
-
-// mark_target_not_ready:
-// 	cds_set_target_ready(false);
-
-// err_deinit_hif_context:
-// 	hdd_deinit_cds_hif_context();
-
-// err_hif_close:
-// 	hif_close(hif_ctx);
-// 	return ret;
-// }
 
 void hdd_hif_close(struct hdd_context *hdd_ctx, void *hif_ctx)
 {
@@ -698,10 +610,8 @@ static int __hdd_soc_probe(struct device *dev,
 	cds_set_recovery_in_progress(false);
 
 	errno = hdd_init_qdf_ctx(dev, bdev, bus_type, bid);
-	if (errno){
-		pr_err("[VEBIAN] failed at hdd_init_qdf_ctx: %d\n", errno);
+	if (errno)
 		goto unlock;
-	}
 
 	errno = hdd_init_dma_mask(dev, bus_type);
 	if (errno)
@@ -716,20 +626,17 @@ static int __hdd_soc_probe(struct device *dev,
 	status = dp_prealloc_init((struct cdp_ctrl_objmgr_psoc *)hdd_ctx->psoc);
 
 	if (status != QDF_STATUS_SUCCESS) {
-		pr_err("[VEBIAN] failed at dp_prealloc_init: %d\n", errno);
+		errno = qdf_status_to_os_return(status);
 		goto dp_prealloc_fail;
 	}
 
 	errno = hdd_wlan_startup(hdd_ctx);
-	if (errno) {
-		pr_err("[VEBIAN] failed at hdd_wlan_startup: %d\n", errno);
+	if (errno)
 		goto hdd_context_destroy;
-	}
 
 	status = hdd_psoc_create_vdevs(hdd_ctx);
 	if (QDF_IS_STATUS_ERROR(status)) {
 		errno = qdf_status_to_os_return(status);
-		pr_err("[VEBIAN] failed at hdd_psoc_create_vdevs: %d\n", errno);
 		goto wlan_exit;
 	}
 

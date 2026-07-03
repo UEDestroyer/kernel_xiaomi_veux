@@ -117,9 +117,6 @@ void hdd_hif_close(struct hdd_context *hdd_ctx, void *hif_ctx);
  */
 int hdd_hif_open(struct device *dev, void *bdev, const struct hif_bus_id *bid,
 		 enum qdf_bus_type bus_type, bool reinit);
-int hdd_hif_open_ctx(struct device *dev, void *bdev, const struct hif_bus_id *bid,
-		enum qdf_bus_type bus_type, bool reinit, struct hdd_context *hdd_ctx_in);
-
 
 /**
  * hdd_soc_idle_restart_lock() - Takes wakelock for idle restart

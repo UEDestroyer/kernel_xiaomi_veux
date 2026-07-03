@@ -65,8 +65,8 @@
 			reg = <0x0 0x0>;
 			cpu-idle-states = <&SLVR_PC &SLVR_RAIL_OFF>;
 			enable-method = "psci";
-			capacity-dmips-mhz = <1024>;
-			dynamic-power-coefficient = <100>;
+			capacity-dmips-mhz = <417>;
+			dynamic-power-coefficient = <262>;
 			cpu-release-addr = <0x0 0x50000000>;
 			next-level-cache = <&L2_0>;
 			qcom,freq-domain = <&cpufreq_hw 0 6>;
@@ -89,8 +89,8 @@
 			reg = <0x0 0x100>;
 			cpu-idle-states = <&SLVR_PC &SLVR_RAIL_OFF>;
 			enable-method = "psci";
-			capacity-dmips-mhz = <1024>;
-			dynamic-power-coefficient = <100>;
+			capacity-dmips-mhz = <417>;
+			dynamic-power-coefficient = <262>;
 			cpu-release-addr = <0x0 0x50000000>;
 			next-level-cache = <&L2_1>;
 			qcom,freq-domain = <&cpufreq_hw 0 6>;
@@ -107,8 +107,8 @@
 			reg = <0x0 0x200>;
 			cpu-idle-states = <&SLVR_PC &SLVR_RAIL_OFF>;
 			enable-method = "psci";
-			capacity-dmips-mhz = <1024>;
-			dynamic-power-coefficient = <100>;
+			capacity-dmips-mhz = <417>;
+			dynamic-power-coefficient = <262>;
 			cpu-release-addr = <0x0 0x50000000>;
 			next-level-cache = <&L2_2>;
 			qcom,freq-domain = <&cpufreq_hw 0 6>;
@@ -125,8 +125,8 @@
 			reg = <0x0 0x300>;
 			cpu-idle-states = <&SLVR_PC &SLVR_RAIL_OFF>;
 			enable-method = "psci";
-			capacity-dmips-mhz = <1024>;
-			dynamic-power-coefficient = <100>;
+			capacity-dmips-mhz = <417>;
+			dynamic-power-coefficient = <262>;
 			cpu-release-addr = <0x0 0x50000000>;
 			next-level-cache = <&L2_3>;
 			qcom,freq-domain = <&cpufreq_hw 0 6>;
@@ -143,8 +143,8 @@
 			reg = <0x0 0x400>;
 			enable-method = "psci";
 			cpu-idle-states = <&SLVR_PC &SLVR_RAIL_OFF>;
-			capacity-dmips-mhz = <1024>;
-			dynamic-power-coefficient = <100>;
+			capacity-dmips-mhz = <417>;
+			dynamic-power-coefficient = <262>;
 			cpu-release-addr = <0x0 0x50000000>;
 			next-level-cache = <&L2_4>;
 			qcom,freq-domain = <&cpufreq_hw 0 6>;
@@ -161,8 +161,8 @@
 			reg = <0x0 0x500>;
 			enable-method = "psci";
 			cpu-idle-states = <&SLVR_PC &SLVR_RAIL_OFF>;
-			capacity-dmips-mhz = <1024>;
-			dynamic-power-coefficient = <100>;
+			capacity-dmips-mhz = <417>;
+			dynamic-power-coefficient = <262>;
 			cpu-release-addr = <0x0 0x50000000>;
 			next-level-cache = <&L2_5>;
 			qcom,freq-domain = <&cpufreq_hw 0 6>;
@@ -179,8 +179,8 @@
 			reg = <0x0 0x600>;
 			cpu-idle-states = <&GOLD_PC &GOLD_RAIL_OFF>;
 			enable-method = "psci";
-			capacity-dmips-mhz = <1946>;
-			dynamic-power-coefficient = <520>;
+			capacity-dmips-mhz = <1024>;
+			dynamic-power-coefficient = <361>;
 			cpu-release-addr = <0x0 0x50000000>;
 			next-level-cache = <&L2_6>;
 			qcom,freq-domain = <&cpufreq_hw 1 2>;
@@ -198,8 +198,8 @@
 			reg = <0x0 0x700>;
 			cpu-idle-states = <&GOLD_PC &GOLD_RAIL_OFF>;
 			enable-method = "psci";
-			capacity-dmips-mhz = <1946>;
-			dynamic-power-coefficient = <520>;
+			capacity-dmips-mhz = <1024>;
+			dynamic-power-coefficient = <361>;
 			cpu-release-addr = <0x0 0x50000000>;
 			next-level-cache = <&L2_7>;
 			qcom,freq-domain = <&cpufreq_hw 1 2>;
@@ -1302,6 +1302,28 @@
 				<GIC_SPI 31 IRQ_TYPE_LEVEL_HIGH>;
 		interrupt-names = "dcvsh0_int", "dcvsh1_int";
 		#freq-domain-cells = <2>;
+
+		qcom,cpufreq-table-0 =
+			<576000>,
+			<691200>,
+			<940800>,
+			<1113600>,
+			<1324800>,
+			<1516800>,
+			<1651200>,
+			<1708800>,
+			<1804800>;
+
+		qcom,cpufreq-table-1 =
+			<691200>,
+			<940800>,
+			<1228800>,
+			<1401600>,
+			<1516800>,
+			<1651200>,
+			<1804800>,
+			<2054400>,
+			<2208000>;
 	};
 
 	qcom,cpufreq-hw-debug@0fd91000 {
@@ -2175,12 +2197,6 @@
 			interrupt-controller;
 			#interrupt-cells = <2>;
 		};
-
-		smp2p_wlan_1_out: qcom,smp2p-wlan-1-out {
-    			qcom,entry-name = "wlan";
-    			#qcom,smem-state-cells = <1>;
-		
-		};
 	};
 
 	qcom,smp2p-cdsp {
@@ -2997,34 +3013,6 @@
 		qcom,smem-states = <&modem_smp2p_out 0>;
 		qcom,smem-state-names = "qcom,force-stop";
 	};
-	pil_wlan: qcom,wcss@C800001 {
-    		compatible = "qcom,pil-tz-generic";
-    		reg = <0xC800001 0x1>;
-
-    		clocks = <&rpmcc RPM_SMD_XO_CLK_SRC>;
-    		clock-names = "xo";
-    		qcom,proxy-clock-names = "xo";
-
-    		vdd_cx-supply = <&S2E_LEVEL>;
-    		qcom,vdd_cx-uV-uA = <RPMH_REGULATOR_LEVEL_TURBO 100000>;
-    		qcom,proxy-reg-names = "vdd_cx";
-
-    		qcom,firmware-name = "wlan";
-    		memory-region = <&pil_wlan_mem>;
-    		qcom,proxy-timeout-ms = <10000>;
-    		qcom,sysmon-id = <10>;
-    		qcom,ssctl-instance-id = <0x14>;
-		qcom,pas-id = <0x11>;
-
- 		interrupts-extended = <&smp2p_wlan_1_in 0 0>,
-		                      <&smp2p_wlan_1_in 1 0>;
-    		interrupt-names = "qcom,err-fatal",
-				      "qcom,early-crash-ind";
-
-		qcom,smem-states = <&smp2p_wlan_1_out 0>;
-		qcom,smem-state-names = "qcom,force-stop";
-	};
-
 
 	qcom_qseecom: qseecom@c1800000 {
 		compatible = "qcom,qseecom";
@@ -3204,8 +3192,6 @@
 		reg = <0x5800000 0x84000>,
 			<0x5804000 0x23000>;
 		reg-names = "ipa-base", "gsi-base";
-		mboxes = <&ipcc_mproc 3 0>;
-		mbox-names = "qmp-ipa";
 		interrupts = <GIC_SPI 257 IRQ_TYPE_LEVEL_HIGH>,
 			<GIC_SPI 259 IRQ_TYPE_LEVEL_HIGH>;
 		interrupt-names = "ipa-irq", "gsi-irq";
@@ -3805,10 +3791,6 @@
 		      <0xb0000000 0x10000>;
 		reg-names = "membase", "smmu_iova_ipa";
 		iommus = <&apps_smmu 0x80 0x1>;
-		
-		qcom,smmu-s1-bypass;
-		dma-coherent;
-
 		interrupts = <GIC_SPI 358 IRQ_TYPE_LEVEL_HIGH /* CE0 */ >,
 			     <GIC_SPI 359 IRQ_TYPE_LEVEL_HIGH /* CE1 */ >,
 			     <GIC_SPI 360 IRQ_TYPE_LEVEL_HIGH /* CE2 */ >,
@@ -3823,7 +3805,7 @@
 			     <GIC_SPI 369 IRQ_TYPE_LEVEL_HIGH /* CE11 */ >;
 		qcom,iommu-dma = "fastmap";
 		qcom,iommu-faults = "stall-disable", "HUPCF", "non-fatal";
-		qcom,wlan-msa-fixed-region = <&pil_mpss_wlan_mem>;
+		qcom,wlan-msa-fixed-region = <&pil_wlan_mem>;
 		qcom,iommu-dma-addr-pool = <0xa0000000 0x10000000>;
 		qcom,iommu-geometry = <0xa0000000 0x10010000>;
 		vdd-cx-mx-supply = <&L2E>;

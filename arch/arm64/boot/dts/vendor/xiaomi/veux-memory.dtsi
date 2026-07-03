@@ -29,9 +29,7 @@
 };
 
 &soc {
-    qcom,rmtfs_sharedmem@0 {
-        compatible = "uio,pdrv-genirq", "qcom,sharedmem-uio";
-        reg = <0x0 0x300000>;
-        status = "okay";
-    };
+	qcom,rmtfs_sharedmem@0 {
+		reg = <0x0 0x300000>;
+	};
 };

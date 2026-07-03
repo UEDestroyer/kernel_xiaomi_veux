@@ -28,8 +28,6 @@
 
 #include <linux/soc/qcom/smem.h>
 #include <linux/soc/qcom/smem_state.h>
-#include <linux/sysfs.h>
-#include <linux/workqueue.h>
 
 #include "peripheral-loader.h"
 
@@ -149,52 +147,6 @@ static struct icc_path *scm_perf_client;
 static int scm_pas_bw_count;
 static DEFINE_MUTEX(scm_pas_bw_mutex);
 static int is_inited;
-
-static struct work_struct wlan_boot_work;
-static void do_wlan_boot(struct work_struct *w)
-{
-	void *h = subsystem_get("wlan");
-	if (IS_ERR_OR_NULL(h))
-		pr_err("[VEBIAN] wlan boot FAILED\n");
-	else
-		pr_err("[VEBIAN] wlan boot OK\n");
-}
-static ssize_t wlan_boot_store(struct kobject *kobj,
-	struct kobj_attribute *attr, const char *buf, size_t count)
-{
-	int val;
-	if (kstrtoint(buf, 10, &val) || val != 1)
-		return -EINVAL;
-	schedule_work(&wlan_boot_work);
-	return count;
-}
-static struct kobj_attribute wlan_boot_attr =
-	__ATTR(boot, 0220, NULL, wlan_boot_store);
-
-
-static struct work_struct modem_boot_work;
-
-static void do_modem_boot(struct work_struct *w)
-{
-	void *h = subsystem_get("modem");
-	if (IS_ERR_OR_NULL(h))
-		pr_err("[VEBIAN] modem boot FAILED\n");
-	else
-		pr_err("[VEBIAN] modem boot OK\n");
-}
-
-static ssize_t modem_boot_store(struct kobject *kobj,
-	struct kobj_attribute *attr, const char *buf, size_t count)
-{
-	int val;
-	if (kstrtoint(buf, 10, &val) || val != 1)
-		return -EINVAL;
-	schedule_work(&modem_boot_work);
-	return count;
-}
-
-static struct kobj_attribute modem_boot_attr =
-	__ATTR(boot, 0220, NULL, modem_boot_store);
 
 static void subsys_disable_all_irqs(struct pil_tz_data *d);
 static void subsys_enable_all_irqs(struct pil_tz_data *d);
@@ -858,8 +810,6 @@ static int subsys_powerup(const struct subsys_desc *subsys)
 {
 	struct pil_tz_data *d = subsys_to_data(subsys);
 	int ret = 0;
-	pr_err("[VEBIAN] POWERUP %s\n", d->subsys_desc.name);
-
 
 	reinit_completion(&d->err_ready);
 
@@ -873,7 +823,7 @@ static int subsys_powerup(const struct subsys_desc *subsys)
 		return ret;
 	}
 
-	pr_err("pil_boot is successful from %s and waiting for error ready\n",
+	pr_info("pil_boot is successful from %s and waiting for error ready\n",
 				d->subsys_desc.name);
 	subsys_enable_all_irqs(d);
 	ret = wait_for_err_ready(d);
@@ -1399,9 +1349,6 @@ static int pil_tz_generic_probe(struct platform_device *pdev)
 	int len, rc;
 	char md_node[20];
 
-	pr_err("[VEBIAN] PIL_TZ_PROBE start %s\n",
-	       dev_name(&pdev->dev));
-
 	/* Do not probe the generic PIL driver yet if the SCM BW driver
 	 * is not yet registered. Return error if that driver returns with
 	 * any error other than EPROBE_DEFER.
@@ -1410,10 +1357,6 @@ static int pil_tz_generic_probe(struct platform_device *pdev)
 		return -EPROBE_DEFER;
 	if (IS_ERR(scm_perf_client))
 		return PTR_ERR(scm_perf_client);
-
-
-
-
 
 	d = devm_kzalloc(&pdev->dev, sizeof(*d), GFP_KERNEL);
 	if (!d)
@@ -1431,9 +1374,6 @@ static int pil_tz_generic_probe(struct platform_device *pdev)
 				      &d->desc.name);
 	if (rc)
 		return rc;
-
-	pr_err("[VEBIAN] PIL_TZ_PROBE firmware=%s\n",
-	       d->desc.name);
 
 	/* Defaulting smem_id to be not present */
 	d->smem_id = -1;
@@ -1615,43 +1555,11 @@ load_from_pil:
 		goto err_minidump;
 	}
 
-	pr_err("[VEBIAN] subsys_register(%s)\n",
-	       d->subsys_desc.name);
-
 	d->subsys = subsys_register(&d->subsys_desc);
 	if (IS_ERR(d->subsys)) {
 		rc = PTR_ERR(d->subsys);
 		goto err_subsys;
 	}
-
-
-	pr_err("[VEBIAN] subsys_register OK (%s)\n",
-	       d->subsys_desc.name);
-
-
-	if (!strcmp(d->subsys_desc.name, "modem")) {
-		static bool modem_boot_registered = false;
-		if (!modem_boot_registered) {
-			struct kobject *kobj;
-			INIT_WORK(&modem_boot_work, do_modem_boot);
-			kobj = kobject_create_and_add("boot_modem", kernel_kobj);
-			if (kobj)
-				sysfs_create_file(kobj, &modem_boot_attr.attr);
-			modem_boot_registered = true;
-		}
-	}
-	if (!strcmp(d->subsys_desc.name, "wlan")) {
-		static bool wlan_boot_registered = false;
-    		if (!wlan_boot_registered) {
-        		struct kobject *kobj;
-        		INIT_WORK(&wlan_boot_work, do_wlan_boot);
-        		kobj = kobject_create_and_add("boot_wlan", kernel_kobj);
-        		if (kobj)
-            			sysfs_create_file(kobj, &wlan_boot_attr.attr);
-        		wlan_boot_registered = true;
-		}
-	}
-
 
 	rc = subsys_setup_irqs(pdev);
 	if (rc) {
