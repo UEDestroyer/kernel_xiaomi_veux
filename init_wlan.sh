@@ -17,11 +17,11 @@ kick_wcnss_power() {
     echo "0" > /sys/class/gpio/gpioX/value
 }
 
-# Function to start vendor.qti.wifi.hal service
+# Function to start vendor.qti.wifi.hal service using systemctl
 start_vendor_wifi_hal() {
-    # Assuming the service is managed by init.rc or similar
-    check_file "/system/bin/vendor.qti.wifi.hal"
-    setprop ctl.start vendor.qti.wifi.hal
+    # Assuming the service is managed by systemd
+    check_file "/etc/systemd/system/vendor.qti.wifi.hal.service"
+    systemctl start vendor.qti.wifi.hal.service
 }
 
 # Function to start wpa_supplicant
@@ -40,7 +40,7 @@ fi
 # Kick GPIO/Power-regulator for WCNSS
 kick_wcnss_power
 
-# Start vendor.qti.wifi.hal service
+# Start vendor.qti.wifi.hal service using systemctl
 start_vendor_wifi_hal
 
 # Start wpa_supplicant
