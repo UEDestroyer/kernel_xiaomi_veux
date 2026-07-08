@@ -93,10 +93,21 @@ set_config "CONFIG_UIO_PDRV_GENIRQ"              "CONFIG_UIO_PDRV_GENIRQ=y"
 set_config "CONFIG_UIO_DMEM_GENIRQ"              "CONFIG_UIO_DMEM_GENIRQ=y"
 set_config "CONFIG_QCOM_RMTFS_MEM"              "CONFIG_QCOM_RMTFS_MEM=y"
 
+set_config "CONFIG_ICNSS2_RESTART_LEVEL_NOTIF" "CONFIG_ICNSS2_RESTART_LEVEL_NOTIF=y"
+set_config "CONFIG_DYNAMIC_DEBUG" "CONFIG_DYNAMIC_DEBUG=y"
+
+
 # ts
 set_config "CONFIG_TOUCHSCREEN_FTS" "CONFIG_TOUCHSCREEN_FTS=y"
 
 set_config "CONFIG_CNSS_QCA6750" "CONFIG_CNSS_QCA6750=y"
+
+#usb wifi
+set_config "CONFIG_MODULES" "CONFIG_MODULES=y"
+set_config "CONFIG_R8188EU" "CONFIG_R8188EU=m"
+
+#-dtbo
+set_config "CONFIG_BUILD_ARM64_DT_OVERLAY" "CONFIG_BUILD_ARM64_DT_OVERLAY=n"
 
 #usb
 # --- USB ECM конфигурация ---
@@ -119,12 +130,21 @@ set_config "CONFIG_CNSS_QCA6750" "CONFIG_CNSS_QCA6750=y"
 ./scripts/config --file "$TARGET_CONFIG" --enable MSM_PIL_MSS_QDSP6V5
 
 
+#./scripts/config --file out/.config --enable CONFIG_LTO_CLANG_THIN
+#./scripts/config --file out/.config --disable CONFIG_LTO_NONE
+
+./scripts/config --file out/.config --enable CONFIG_LTO_CLANG
+./scripts/config --file out/.config --enable CONFIG_LTO_CLANG_THIN
+./scripts/config --file out/.config --disable CONFIG_LTO_NONE
+
+./scripts/config --file out/.config --enable CONFIG_CGROUP_DEVICE
+./scripts/config --file out/.config --enable CONFIG_CGROUP_PIDS
+
 #echo -e 'CONFIG_QCA_CLD_WLAN=m \nCONFIG_QCA_CLD_WLAN_PROFILE="default"' >> out/.config
 
 # Пересчитываем зависимости после патчинга
 echo "[KERNEL-BUILD] Resolving config dependencies (olddefconfig)..."
-make olddefconfig O=out ARCH=arm64 CC=clang LLVM=1 LLVM_IAS=1
-
+make ARCH=arm64 O=out CC=clang LD=ld.lld LLVM=1 olddefconfig
 
 echo "[KERNEL-BUILD] Config patched successfully!"
 

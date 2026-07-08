@@ -15,6 +15,8 @@
 #define SDE_ROT_EVTLOG_FATAL		0xbad
 #define SDE_ROT_EVTLOG_ERROR		0xebad
 
+#define CONFIG_MSM_SDE_ROTATOR_INIT_ONLY y
+
 enum sde_rot_dbg_reg_dump_flag {
 	SDE_ROT_DBG_DUMP_IN_LOG = BIT(0),
 	SDE_ROT_DBG_DUMP_IN_MEM = BIT(1),

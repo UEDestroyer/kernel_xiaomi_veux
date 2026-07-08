@@ -4194,7 +4194,6 @@ int sde_rotator_r3_init(struct sde_rot_mgr *mgr)
 	mgr->ops_hw_validate_entry = sde_hw_rotator_validate_entry;
 	mgr->ops_hw_show_caps = sde_hw_rotator_show_caps;
 	mgr->ops_hw_show_state = sde_hw_rotator_show_state;
-	mgr->ops_hw_create_debugfs = sde_rotator_r3_create_debugfs;
 	mgr->ops_hw_get_pixfmt = sde_hw_rotator_get_pixfmt;
 	mgr->ops_hw_is_valid_pixfmt = sde_hw_rotator_is_valid_pixfmt;
 	mgr->ops_hw_pre_pmevent = sde_hw_rotator_pre_pmevent;

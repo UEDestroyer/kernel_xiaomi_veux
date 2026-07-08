@@ -27,7 +27,9 @@ extern void *icnss_ipc_soc_wake_context;
 #define icnss_ipc_log_smp2p_string(_x...)                                \
 	ipc_log_string(icnss_ipc_log_smp2p_context, _x)
 
-#define icnss_ipc_soc_wake_string(_x...)                                \
+#define icnss_ipc_soc_wake_string(_x...)                          
+
+\
 	ipc_log_string(icnss_ipc_soc_wake_context, _x)
 #else
 #define icnss_ipc_log_string(_x...)
@@ -58,22 +60,22 @@ extern void *icnss_ipc_soc_wake_context;
 	} while (0)
 
 #define icnss_pr_dbg(_fmt, ...) do {                                    \
-	pr_debug(_fmt, ##__VA_ARGS__);                                  \
+	pr_info(_fmt, ##__VA_ARGS__);                                  \
 	icnss_ipc_log_string(pr_fmt(_fmt), ##__VA_ARGS__);              \
 	} while (0)
 
 #define icnss_pr_vdbg(_fmt, ...) do {                                   \
-	pr_debug(_fmt, ##__VA_ARGS__);                                  \
+	pr_info(_fmt, ##__VA_ARGS__);                                  \
 	icnss_ipc_log_long_string(pr_fmt(_fmt), ##__VA_ARGS__);         \
 	} while (0)
 
 #define icnss_pr_smp2p(_fmt, ...) do {                                  \
-	pr_debug(_fmt, ##__VA_ARGS__);                                  \
+	pr_info(_fmt, ##__VA_ARGS__);                                  \
 	icnss_ipc_log_smp2p_string(pr_fmt(_fmt), ##__VA_ARGS__);        \
 	} while (0)
 
 #define icnss_pr_soc_wake(_fmt, ...) do {                               \
-	pr_debug(_fmt, ##__VA_ARGS__);                                  \
+	pr_info(_fmt, ##__VA_ARGS__);                                  \
 	icnss_ipc_soc_wake_string(pr_fmt(_fmt), ##__VA_ARGS__);         \
 	} while (0)
 
