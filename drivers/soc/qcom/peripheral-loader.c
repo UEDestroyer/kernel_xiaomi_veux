@@ -446,6 +446,8 @@ int pil_do_ramdump(struct pil_desc *desc,
 				return pil_do_minidump(desc, minidump_dev);
 			}
 			pr_debug("Minidump aborted for %s\n", desc->name);
+			pr_err("PAIMON: pil_do_ramdump(): minidump aborted (encryption not done) for %s, ret=-EINVAL\n",
+				desc->name);
 			return -EINVAL;
 		}
 	}
@@ -667,6 +669,8 @@ static struct pil_seg *pil_init_seg(const struct pil_desc *desc,
 	if (phdr->p_filesz > phdr->p_memsz) {
 		pil_err(desc, "Segment %d: file size (%u) is greater than mem size (%u).\n",
 			num, phdr->p_filesz, phdr->p_memsz);
+		pr_err("PAIMON: pil_init_seg(): seg %d filesz(%u) > memsz(%u) for %s, ret=-EINVAL\n",
+			num, phdr->p_filesz, phdr->p_memsz, desc->name);
 		return ERR_PTR(-EINVAL);
 	}
 
@@ -717,6 +721,10 @@ static int pil_init_entry_addr(struct pil_priv *priv, const struct pil_mdt *mdt)
 		entry = pil_reloc(priv, entry);
 	priv->entry_addr = entry;
 
+	pr_info("PAIMON: pil_init_entry_addr() for %s: e_entry=%pa relocated=%d image_relocated=%d\n",
+		priv->desc->name, &entry, priv->desc->flags & PIL_SKIP_ENTRY_CHECK ? -1 : 0,
+		image_relocated);
+
 	if (priv->desc->flags & PIL_SKIP_ENTRY_CHECK)
 		return 0;
 
@@ -729,6 +737,8 @@ static int pil_init_entry_addr(struct pil_priv *priv, const struct pil_mdt *mdt)
 		}
 	}
 	pil_err(priv->desc, "entry address %pa not within range\n", &entry);
+	pr_err("PAIMON: pil_init_entry_addr(): entry %pa out of range for %s, ret=-EADDRNOTAVAIL\n",
+		&entry, priv->desc->name);
 	pil_dump_segs(priv);
 	return -EADDRNOTAVAIL;
 }
@@ -743,11 +753,19 @@ static int pil_alloc_region(struct pil_priv *priv, phys_addr_t min_addr,
 	int ret;
 	struct resource res;
 
+	pr_info("PAIMON: pil_alloc_region() enter for %s min_addr=%pa max_addr=%pa align=%zx\n",
+		priv->desc->name, &min_addr, &max_addr, align);
+
 	/* Don't reallocate due to fragmentation concerns, just sanity check */
 	if (priv->is_region_allocated) {
 		if (WARN(priv->region_end - priv->region_start < size,
-			"Can't reuse PIL memory, too small\n"))
+			"Can't reuse PIL memory, too small\n")) {
+			pr_err("PAIMON: pil_alloc_region(): reused region too small for %s, ret=-ENOMEM\n",
+				priv->desc->name);
 			return -ENOMEM;
+		}
+		pr_info("PAIMON: pil_alloc_region(): reusing existing region for %s\n",
+			priv->desc->name);
 		return 0;
 	}
 
@@ -762,6 +780,8 @@ static int pil_alloc_region(struct pil_priv *priv, phys_addr_t min_addr,
 	mem_node = of_parse_phandle(ofnode, "memory-region", 0);
 	if (!mem_node) {
 		pil_err(priv->desc, "No memory-region associated\n");
+		pr_err("PAIMON: pil_alloc_region(): no 'memory-region' phandle in DT for %s, ret=-ENOMEM\n",
+			priv->desc->name);
 		ret = -ENOMEM;
 		goto err;
 	}
@@ -770,6 +790,8 @@ static int pil_alloc_region(struct pil_priv *priv, phys_addr_t min_addr,
 	of_node_put(mem_node);
 	if (ret < 0) {
 		pil_err(priv->desc, "Failed to get the resource\n");
+		pr_err("PAIMON: pil_alloc_region(): of_address_to_resource failed for %s, ret=%d\n",
+			priv->desc->name, ret);
 		goto err;
 	}
 
@@ -779,11 +801,18 @@ static int pil_alloc_region(struct pil_priv *priv, phys_addr_t min_addr,
 	priv->base_addr = min_addr;
 	priv->region_size = aligned_size;
 
+	pr_info("PAIMON: pil_alloc_region() success for %s region=[%pa..%pa] (dt res=[%pa size=%llx])\n",
+		priv->desc->name, &priv->region_start, &priv->region_end,
+		&res.start, (unsigned long long)resource_size(&res));
+
 	return 0;
 
 err:
 	priv->region_start = 0;
 	priv->region_end = 0;
+
+	pr_err("PAIMON: pil_alloc_region() FAILED for %s, ret=%d\n",
+		priv->desc->name, ret);
 
 	return ret;
 }
@@ -832,8 +861,15 @@ static int pil_setup_region(struct pil_priv *priv, const struct pil_mdt *mdt)
 	max_addr_n = ALIGN(max_addr_n, SZ_4K);
 	max_addr_r = ALIGN(max_addr_r, SZ_4K);
 
+	pr_info("PAIMON: pil_setup_region() for %s: relocatable=%d min_r=%pa max_r=%pa min_n=%pa max_n=%pa\n",
+		priv->desc->name, relocatable,
+		&min_addr_r, &max_addr_r, &min_addr_n, &max_addr_n);
+
 	if (relocatable) {
 		ret = pil_alloc_region(priv, min_addr_r, max_addr_r, align);
+		if (ret)
+			pr_err("PAIMON: pil_setup_region(): pil_alloc_region failed for %s, ret=%d\n",
+				priv->desc->name, ret);
 	} else {
 		priv->region_start = min_addr_n;
 		priv->region_end = max_addr_n;
@@ -871,9 +907,15 @@ static int pil_init_mmap(struct pil_desc *desc, const struct pil_mdt *mdt)
 	struct pil_seg *seg;
 	int i, ret;
 
+	pr_info("PAIMON: pil_init_mmap() enter for %s, e_phnum=%d\n",
+		desc->name, mdt->hdr.e_phnum);
+
 	ret = pil_setup_region(priv, mdt);
-	if (ret)
+	if (ret) {
+		pr_err("PAIMON: pil_init_mmap(): pil_setup_region failed for %s, ret=%d\n",
+			desc->name, ret);
 		return ret;
+	}
 
 #ifdef CONFIG_QGKI_MSM_BOOT_TIME_MARKER
 	if (!strcmp(desc->name, "modem"))
@@ -890,15 +932,26 @@ static int pil_init_mmap(struct pil_desc *desc, const struct pil_mdt *mdt)
 			continue;
 
 		seg = pil_init_seg(desc, phdr, i);
-		if (IS_ERR(seg))
+		if (IS_ERR(seg)) {
+			pr_err("PAIMON: pil_init_mmap(): pil_init_seg failed for %s at phdr %d, ret=%ld\n",
+				desc->name, i, PTR_ERR(seg));
 			return PTR_ERR(seg);
+		}
 
 		list_add_tail(&seg->list, &priv->segs);
 		priv->num_segs++;
 	}
 	list_sort(NULL, &priv->segs, pil_cmp_seg);
 
-	return pil_init_entry_addr(priv, mdt);
+	ret = pil_init_entry_addr(priv, mdt);
+	if (ret)
+		pr_err("PAIMON: pil_init_mmap(): pil_init_entry_addr failed for %s, ret=%d\n",
+			desc->name, ret);
+	else
+		pr_info("PAIMON: pil_init_mmap() success for %s, num_segs=%d entry_addr=%pa\n",
+			desc->name, priv->num_segs, &priv->entry_addr);
+
+	return ret;
 }
 
 struct pil_map_fw_info {
@@ -981,6 +1034,9 @@ static int pil_load_seg(struct pil_desc *desc, struct pil_seg *seg)
 	};
 	void *map_data = desc->map_data ? desc->map_data : &map_fw_info;
 
+	pr_info("PAIMON: pil_load_seg() enter for %s seg num=%d paddr=%pa sz=%lx filesz=%zx\n",
+		desc->name, num, &seg->paddr, seg->sz, seg->filesz);
+
 	if (seg->filesz) {
 		snprintf(fw_name, ARRAY_SIZE(fw_name), "%s.b%02d",
 				desc->fw_name, num);
@@ -988,6 +1044,8 @@ static int pil_load_seg(struct pil_desc *desc, struct pil_seg *seg)
 						map_data);
 		if (!firmware_buf) {
 			pil_err(desc, "Failed to map memory for firmware buffer\n");
+			pr_err("PAIMON: pil_load_seg(): map_fw_mem failed for %s %s, ret=-ENOMEM\n",
+				desc->name, fw_name);
 			return -ENOMEM;
 		}
 
@@ -998,12 +1056,16 @@ static int pil_load_seg(struct pil_desc *desc, struct pil_seg *seg)
 		if (ret) {
 			pil_err(desc, "Failed to locate blob %s or blob is too big(rc:%d)\n",
 				fw_name, ret);
+			pr_err("PAIMON: pil_load_seg(): request_firmware_into_buf(%s) failed, ret=%d\n",
+				fw_name, ret);
 			return ret;
 		}
 
 		if (fw->size != seg->filesz) {
 			pil_err(desc, "Blob size %u doesn't match %lu\n",
 					ret, seg->filesz);
+			pr_err("PAIMON: pil_load_seg(): blob %s size mismatch fw->size=%zu expected=%zu, ret=-EPERM\n",
+				fw_name, fw->size, seg->filesz);
 			release_firmware(fw);
 			return -EPERM;
 		}
@@ -1034,10 +1096,17 @@ static int pil_load_seg(struct pil_desc *desc, struct pil_seg *seg)
 
 	if (desc->ops->verify_blob) {
 		ret = desc->ops->verify_blob(desc, seg->paddr, seg->sz);
-		if (ret)
+		if (ret) {
 			pil_err(desc, "Blob%u failed verification(rc:%d)\n",
 								num, ret);
+			pr_err("PAIMON: pil_load_seg(): verify_blob failed for %s seg %u, ret=%d\n",
+				desc->name, num, ret);
+		}
 	}
+
+	if (!ret)
+		pr_info("PAIMON: pil_load_seg() success for %s seg %d\n",
+			desc->name, num);
 
 	return ret;
 }
@@ -1047,8 +1116,13 @@ static int pil_parse_devicetree(struct pil_desc *desc)
 	struct device_node *ofnode = desc->dev->of_node;
 	int clk_ready = 0;
 
-	if (!ofnode)
+	pr_info("PAIMON: pil_parse_devicetree() enter for %s\n", desc->name);
+
+	if (!ofnode) {
+		pr_err("PAIMON: pil_parse_devicetree(): no of_node for %s, ret=-EINVAL\n",
+			desc->name);
 		return -EINVAL;
+	}
 
 	if (of_property_read_u32(ofnode, "qcom,mem-protect-id",
 					&desc->subsys_vmid))
@@ -1065,12 +1139,16 @@ static int pil_parse_devicetree(struct pil_desc *desc)
 			dev_dbg(desc->dev,
 				"[%s]: Error getting proxy unvoting irq\n",
 				desc->name);
+			pr_err("PAIMON: pil_parse_devicetree(): of_irq_get_byname failed for %s, ret=%d\n",
+				desc->name, clk_ready);
 			return clk_ready;
 		}
 
 	}
 	desc->proxy_unvote_irq = clk_ready;
 
+	pr_info("PAIMON: pil_parse_devicetree() success for %s, subsys_vmid=%d proxy_unvote_irq=%d\n",
+		desc->name, desc->subsys_vmid, desc->proxy_unvote_irq);
 
 	return 0;
 }
@@ -1195,9 +1273,13 @@ int pil_boot(struct pil_desc *desc)
 	bool mem_protect = false;
 	bool hyp_assign = false;
 
+	pr_info("PAIMON: pil_boot() ENTER for %s\n", desc->name);
+
 	ret = pil_notify_aop(desc, "on");
 	if (ret < 0) {
 		pil_err(desc, "Failed to send ON message to AOP rc:%d\n", ret);
+		pr_err("PAIMON: pil_boot(): pil_notify_aop(on) failed for %s, ret=%d\n",
+			desc->name, ret);
 		return ret;
 	}
 
@@ -1214,14 +1296,22 @@ int pil_boot(struct pil_desc *desc)
 		down_read(&pil_pm_rwsem);
 	}
 	snprintf(fw_name, sizeof(fw_name), "%s.mdt", desc->fw_name);
+	pr_info("PAIMON: pil_boot(): requesting firmware %s for %s\n",
+		fw_name, desc->name);
 	ret = request_firmware(&fw, fw_name, desc->dev);
 	if (ret) {
 		pil_err(desc, "Failed to locate %s(rc:%d)\n", fw_name, ret);
+		pr_err("PAIMON: pil_boot(): request_firmware(%s) FAILED for %s, ret=%d\n",
+			fw_name, desc->name, ret);
 		goto out;
 	}
+	pr_info("PAIMON: pil_boot(): request_firmware(%s) OK, size=%zu\n",
+		fw_name, fw->size);
 
 	if (fw->size < sizeof(*ehdr)) {
 		pil_err(desc, "Not big enough to be an elf header\n");
+		pr_err("PAIMON: pil_boot(): %s too small for elf header (size=%zu < %zu), ret=-EIO\n",
+			fw_name, fw->size, sizeof(*ehdr));
 		ret = -EIO;
 		goto release_fw;
 	}
@@ -1231,53 +1321,80 @@ int pil_boot(struct pil_desc *desc)
 
 	if (memcmp(ehdr->e_ident, ELFMAG, SELFMAG)) {
 		pil_err(desc, "Not an elf header\n");
+		pr_err("PAIMON: pil_boot(): %s bad ELF magic for %s, ret=-EIO\n",
+			fw_name, desc->name);
 		ret = -EIO;
 		goto release_fw;
 	}
 
 	if (ehdr->e_phnum == 0) {
 		pil_err(desc, "No loadable segments\n");
+		pr_err("PAIMON: pil_boot(): %s e_phnum==0 for %s, ret=-EIO\n",
+			fw_name, desc->name);
 		ret = -EIO;
 		goto release_fw;
 	}
 	if (sizeof(struct elf32_phdr) * ehdr->e_phnum +
 	    sizeof(struct elf32_hdr) > fw->size) {
 		pil_err(desc, "Program headers not within mdt\n");
+		pr_err("PAIMON: pil_boot(): %s program headers exceed mdt size (e_phnum=%u fw->size=%zu) for %s, ret=-EIO\n",
+			fw_name, ehdr->e_phnum, fw->size, desc->name);
 		ret = -EIO;
 		goto release_fw;
 	}
 
+	pr_info("PAIMON: pil_boot(): %s elf header OK, e_phnum=%u, calling pil_init_mmap\n",
+		fw_name, ehdr->e_phnum);
+
 	ret = pil_init_mmap(desc, mdt);
-	if (ret)
+	if (ret) {
+		pr_err("PAIMON: pil_boot(): pil_init_mmap FAILED for %s, ret=%d\n",
+			desc->name, ret);
 		goto release_fw;
+	}
 
 	desc->priv->unvoted_flag = 0;
 	ret = pil_proxy_vote(desc);
 	if (ret) {
 		pil_err(desc, "Failed to proxy vote(rc:%d)\n", ret);
+		pr_err("PAIMON: pil_boot(): pil_proxy_vote FAILED for %s, ret=%d\n",
+			desc->name, ret);
 		goto release_fw;
 	}
+	pr_info("PAIMON: pil_boot(): proxy vote OK for %s\n", desc->name);
 
 	trace_pil_event("before_init_image", desc);
-	if (desc->ops->init_image)
+	if (desc->ops->init_image) {
+		pr_info("PAIMON: pil_boot(): calling ops->init_image for %s\n",
+			desc->name);
 		ret = desc->ops->init_image(desc, fw->data, fw->size);
+	}
 	if (ret) {
 		/* S2 mapping not yet done */
 		desc->clear_fw_region = false;
 		pil_err(desc, "Initializing image failed(rc:%d)\n", ret);
+		pr_err("PAIMON: pil_boot(): ops->init_image FAILED for %s, ret=%d <-- likely source of powerup ret\n",
+			desc->name, ret);
 		goto err_boot;
 	}
+	pr_info("PAIMON: pil_boot(): ops->init_image OK for %s\n", desc->name);
 
 	trace_pil_event("before_mem_setup", desc);
-	if (desc->ops->mem_setup)
+	if (desc->ops->mem_setup) {
+		pr_info("PAIMON: pil_boot(): calling ops->mem_setup for %s region=[%pa..%pa]\n",
+			desc->name, &priv->region_start, &priv->region_end);
 		ret = desc->ops->mem_setup(desc, priv->region_start,
 				priv->region_end - priv->region_start);
+	}
 	if (ret) {
 		/* S2 mapping is failed */
 		desc->clear_fw_region = false;
 		pil_err(desc, "Memory setup error(rc:%d)\n", ret);
+		pr_err("PAIMON: pil_boot(): ops->mem_setup FAILED for %s, ret=%d <-- likely source of powerup ret\n",
+			desc->name, ret);
 		goto err_deinit_image;
 	}
+	pr_info("PAIMON: pil_boot(): ops->mem_setup OK for %s\n", desc->name);
 
 	if (desc->subsys_vmid > 0) {
 		/**
@@ -1300,12 +1417,17 @@ int pil_boot(struct pil_desc *desc)
 		if (ret) {
 			pil_err(desc, "Failed to assign memory, ret - %d\n",
 								ret);
+			pr_err("PAIMON: pil_boot(): pil_assign_mem_to_subsys_and_linux FAILED for %s, ret=%d\n",
+				desc->name, ret);
 			goto err_deinit_image;
 		}
 		hyp_assign = true;
+		pr_info("PAIMON: pil_boot(): hyp_assign OK for %s\n", desc->name);
 	}
 
 	trace_pil_event("before_load_seg", desc);
+	pr_info("PAIMON: pil_boot(): loading segments for %s (num_segs=%d, parallel=%d)\n",
+		desc->name, priv->num_segs, pil_wq && !(desc->sequential_loading));
 
 	/**
 	 * Fallback to serial loading of blobs if the
@@ -1313,15 +1435,22 @@ int pil_boot(struct pil_desc *desc)
 	 */
 	if (pil_wq && !(desc->sequential_loading)) {
 		ret = pil_load_segs(desc);
-		if (ret)
+		if (ret) {
+			pr_err("PAIMON: pil_boot(): pil_load_segs (parallel) FAILED for %s, ret=%d\n",
+				desc->name, ret);
 			goto err_deinit_image;
+		}
 	} else {
 		list_for_each_entry(seg, &desc->priv->segs, list) {
 			ret = pil_load_seg(desc, seg);
-			if (ret)
+			if (ret) {
+				pr_err("PAIMON: pil_boot(): pil_load_seg (sequential, seg %d) FAILED for %s, ret=%d\n",
+					seg->num, desc->name, ret);
 				goto err_deinit_image;
+			}
 		}
 	}
+	pr_info("PAIMON: pil_boot(): all segments loaded OK for %s\n", desc->name);
 
 	if (desc->subsys_vmid > 0) {
 		trace_pil_event("before_reclaim_mem", desc);
@@ -1331,19 +1460,26 @@ int pil_boot(struct pil_desc *desc)
 		if (ret) {
 			pil_err(desc, "Failed to assign %s memory, ret - %d\n",
 							desc->name, ret);
+			pr_err("PAIMON: pil_boot(): pil_reclaim_mem FAILED for %s, ret=%d\n",
+				desc->name, ret);
 			goto err_deinit_image;
 		}
 		hyp_assign = false;
+		pr_info("PAIMON: pil_boot(): pil_reclaim_mem OK for %s\n", desc->name);
 	}
 
 	trace_pil_event("before_auth_reset", desc);
 	notify_before_auth_and_reset(desc->dev);
+	pr_info("PAIMON: pil_boot(): calling ops->auth_and_reset for %s\n", desc->name);
 	ret = desc->ops->auth_and_reset(desc);
 	if (ret) {
 		pil_err(desc, "Failed to bring out of reset(rc:%d)\n", ret);
+		pr_err("PAIMON: pil_boot(): ops->auth_and_reset FAILED for %s, ret=%d <-- likely source of powerup ret\n",
+			desc->name, ret);
 		goto err_auth_and_reset;
 	}
 	trace_pil_event("reset_done", desc);
+	pr_info("PAIMON: pil_boot(): ops->auth_and_reset OK for %s\n", desc->name);
 
 #ifdef CONFIG_QGKI_MSM_BOOT_TIME_MARKER
 	if (!strcmp(desc->name, "modem"))
@@ -1385,6 +1521,7 @@ out:
 		pil_release_mmap(desc);
 		pil_notify_aop(desc, "off");
 	}
+	pr_info("PAIMON: pil_boot() EXIT for %s, final ret=%d\n", desc->name, ret);
 	return ret;
 }
 EXPORT_SYMBOL(pil_boot);

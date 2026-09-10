@@ -2023,7 +2023,12 @@ int wlfw_dynamic_feature_mask_send_sync_msg(struct icnss_priv *priv,
 		icnss_pr_err("Dynamic Feature Mask resp wait failed with ret %d\n",
 			     ret);
 		goto out;
-	} else if (resp->resp.result != QMI_RESULT_SUCCESS_V01) {
+	} 
+
+	icnss_pr_err("DEBUG QMI: DYN_FEATURE_MASK RESP received! result=%d, error=%d\n",
+                 resp->resp.result, resp->resp.error);
+
+	if (resp->resp.result != QMI_RESULT_SUCCESS_V01) {
 		icnss_pr_err("QMI Dynamic Feature Mask request rejected, result:%d error:%d\n",
 			resp->resp.result, resp->resp.error);
 		ret = -resp->resp.result;

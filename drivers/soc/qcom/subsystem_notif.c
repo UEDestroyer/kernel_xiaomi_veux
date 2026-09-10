@@ -267,6 +267,8 @@ int subsys_notif_queue_notification(void *subsys_handle,
 	if (notif_type < 0 || notif_type >= SUBSYS_NOTIF_TYPE_COUNT)
 		return -EINVAL;
 
+	pr_info("PAIMON: notif fire for %s type=%d\n", subsys->name, notif_type);
+
 	return srcu_notifier_call_chain(&subsys->subsys_notif_rcvr_list,
 				       notif_type, data);
 }

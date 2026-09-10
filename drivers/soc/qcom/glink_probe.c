@@ -49,6 +49,7 @@ static int glink_probe_ssr_cb(struct notifier_block *this,
 	struct edge_info *einfo = container_of(this, struct edge_info, nb);
 
 	GLINK_INFO("received %ld for %s\n", code, einfo->ssr_label);
+	pr_info("PAIMON: glink_probe_ssr_cb fired for %s code=%ld\n", einfo->ssr_label, code);
 
 	switch (code) {
 	case SUBSYS_AFTER_POWERUP:
@@ -68,11 +69,14 @@ static int glink_probe_smem_reg(struct edge_info *einfo)
 {
 	struct device *dev = einfo->dev;
 
+	pr_info("PAIMON: attempting smem_reg for %s\n", einfo->ssr_label);
+
 	einfo->glink = qcom_glink_smem_register(dev, einfo->node);
 	if (IS_ERR_OR_NULL(einfo->glink)) {
 		GLINK_ERR(dev, "register failed for %s\n", einfo->ssr_label);
 		einfo->glink = NULL;
 	}
+	pr_info("PAIMON: smem_reg result for %s: %s\n", einfo->ssr_label, einfo->glink ? "OK" : "FAILED");
 	GLINK_INFO("register successful for %s\n", einfo->ssr_label);
 
 	return 0;

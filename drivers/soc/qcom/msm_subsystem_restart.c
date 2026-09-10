@@ -625,6 +625,7 @@ static void notify_each_subsys_device(struct subsys_device **list,
 
 		trace_pil_notif("before_send_notif", notif, dev->desc->fw_name);
 		setup_timeout(dev->desc, NULL, SUBSYS_TO_HLOS);
+		pr_info("PAIMON: queuing notif=%d for %s (fw_name=%s)\n", notif, dev->desc->name, dev->desc->fw_name);
 		subsys_notif_queue_notification(dev->notify, notif,
 								&notif_data);
 		cancel_timeout(dev->desc);
@@ -747,11 +748,14 @@ static int subsys_start(struct subsys_device *subsys)
 								NULL);
 	ret = subsys->desc->powerup(subsys->desc);
 	if (ret) {
+		pr_info("PAIMON: SUBSYS POWERUP failed for %s, ret=%d\n", subsys->desc->name, ret);
 		notify_each_subsys_device(&subsys, 1, SUBSYS_POWERUP_FAILURE,
 									NULL);
 		return ret;
 	}
 	subsys_set_state(subsys, SUBSYS_ONLINE);
+
+	pr_info("PAIMON: sending SUBSYS_AFTER_POWERUP for %s\n", subsys->desc->name);
 
 	notify_each_subsys_device(&subsys, 1, SUBSYS_AFTER_POWERUP,
 								NULL);

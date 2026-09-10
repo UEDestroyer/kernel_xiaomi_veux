@@ -109,6 +109,10 @@ set_config "CONFIG_R8188EU" "CONFIG_R8188EU=m"
 #-dtbo
 set_config "CONFIG_BUILD_ARM64_DT_OVERLAY" "CONFIG_BUILD_ARM64_DT_OVERLAY=n"
 
+./scripts/config --file out/.config --enable RPMSG_QCOM_SMD
+./scripts/config --file out/.config --enable QCOM_SYSMON
+./scripts/config --file out/.config --enable QCOM_Q6V5_PAS
+
 #usb
 # --- USB ECM конфигурация ---
 # 1. Вырубаем капризный андроидный Qualcomm GSI
@@ -139,6 +143,9 @@ set_config "CONFIG_BUILD_ARM64_DT_OVERLAY" "CONFIG_BUILD_ARM64_DT_OVERLAY=n"
 
 ./scripts/config --file out/.config --enable CONFIG_CGROUP_DEVICE
 ./scripts/config --file out/.config --enable CONFIG_CGROUP_PIDS
+
+
+
 
 #echo -e 'CONFIG_QCA_CLD_WLAN=m \nCONFIG_QCA_CLD_WLAN_PROFILE="default"' >> out/.config
 

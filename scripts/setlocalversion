@@ -49,13 +49,7 @@ fi
 
 scm_version()
 {
-	cd "$srctree"
-
-	# Check for git and a git repo.
-	if test -z "$(git rev-parse --show-cdup 2>/dev/null)" &&
-	   head=$(git rev-parse --verify --short=8 HEAD 2>/dev/null); then
-		printf '%s%s' "/" $head
-	fi
+	return # господи как я ебал эти ебанные приписки
 }
 
 collect_files()

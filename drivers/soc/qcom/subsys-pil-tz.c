@@ -625,50 +625,98 @@ static int pil_mem_setup_trusted(struct pil_desc *pil, phys_addr_t addr,
 	scm_ret = qcom_scm_pas_mem_setup(d->pas_id, addr, size);
 
 	return scm_ret;
-}
-
-static int pil_auth_and_reset(struct pil_desc *pil)
+}static int pil_auth_and_reset(struct pil_desc *pil)
 {
 	struct pil_tz_data *d = desc_to_data(pil);
 	int rc;
 	u32 scm_ret = 0;
 	unsigned long pfn_start, pfn_end, pfn;
 
-	if (d->subsys_desc.no_auth)
+	pr_info("PAIMON: pil_auth_and_reset() ENTER for %s pas_id=%d no_auth=%d region=[0x%pK size=%zx] region_start=%pa\n",
+		pil->name, d->pas_id, d->subsys_desc.no_auth,
+		(void *)pil->priv->region_start, pil->priv->region_size,
+		&pil->priv->region_start);
+
+	if (d->subsys_desc.no_auth) {
+		pr_info("PAIMON: pil_auth_and_reset(): no_auth set for %s, skipping scm call, ret=0\n",
+			pil->name);
 		return 0;
+	}
 
 	rc = scm_pas_enable_bw();
-	if (rc)
+	if (rc) {
+		pr_err("PAIMON: pil_auth_and_reset(): scm_pas_enable_bw FAILED for %s, ret=%d\n",
+			pil->name, rc);
 		return rc;
+	}
+	pr_info("PAIMON: pil_auth_and_reset(): scm_pas_enable_bw OK for %s\n", pil->name);
 
 	rc = enable_regulators(d, pil->dev, d->regs, d->reg_count, false);
-	if (rc)
+	if (rc) {
+		pr_err("PAIMON: pil_auth_and_reset(): enable_regulators FAILED for %s, ret=%d\n",
+			pil->name, rc);
 		return rc;
+	}
+	pr_info("PAIMON: pil_auth_and_reset(): enable_regulators OK for %s\n", pil->name);
 
 	rc = prepare_enable_clocks(pil->dev, d->clks, d->clk_count);
-	if (rc)
+	if (rc) {
+		pr_err("PAIMON: pil_auth_and_reset(): prepare_enable_clocks FAILED for %s, ret=%d\n",
+			pil->name, rc);
 		goto err_clks;
+	}
+	pr_info("PAIMON: pil_auth_and_reset(): clocks enabled OK for %s, calling qcom_scm_pas_auth_and_reset(pas_id=%d) NOW\n",
+		pil->name, d->pas_id);
 
 	scm_ret = qcom_scm_pas_auth_and_reset(d->pas_id);
+
+	pr_info("PAIMON: pil_auth_and_reset(): qcom_scm_pas_auth_and_reset(pas_id=%d) RETURNED scm_ret=%d (0x%x) for %s\n",
+		d->pas_id, scm_ret, scm_ret, pil->name);
+
+	if ((int)scm_ret)
+		pr_err("PAIMON: pil_auth_and_reset(): *** TZ REJECTED pas_id=%d for %s, scm_ret=%d *** this value becomes pil_boot() ret\n",
+			d->pas_id, pil->name, (int)scm_ret);
 
 	pfn_start = pil->priv->region_start >> PAGE_SHIFT;
 	if (pfn_valid(pfn_start) && !scm_ret) {
 		pfn_end = (PAGE_ALIGN(pil->priv->region_start +
-				pil->priv->region_size)) >> PAGE_SHIFT;
+			pil->priv->region_size)) >> PAGE_SHIFT;
 		for (pfn = pfn_start; pfn < pfn_end; pfn++)
 			set_page_private(pfn_to_page(pfn), SECURE_PAGE_MAGIC);
+		pr_info("PAIMON: pil_auth_and_reset(): marked pages secure for %s [pfn %lx..%lx]\n",
+			pil->name, pfn_start, pfn_end);
+	} else if (!pfn_valid(pfn_start)) {
+		pr_warn("PAIMON: pil_auth_and_reset(): pfn_start=%lx NOT valid for %s (region_start=%pa) - secure page marking skipped\n",
+			pfn_start, pil->name, &pil->priv->region_start);
 	}
 
 	scm_pas_disable_bw();
-	if (rc)
-		goto err_reset;
+	pr_info("PAIMON: pil_auth_and_reset(): scm_pas_disable_bw done for %s (rc from clocks stage=%d, ignored here)\n",
+		pil->name, rc);
 
+	/*
+	 * PAIMON NOTE: this checks `rc`, which at this point is the leftover
+	 * return value from prepare_enable_clocks() above (0 on success),
+	 * NOT the result of qcom_scm_pas_auth_and_reset(). The real TZ
+	 * result is in scm_ret and is returned below regardless of this
+	 * branch. Left behavior unchanged, just logging clearly.
+	 */
+	if (rc) {
+		pr_err("PAIMON: pil_auth_and_reset(): stale rc=%d nonzero, taking err_reset path for %s (NOTE: this is not the scm_ret error path)\n",
+			rc, pil->name);
+		goto err_reset;
+	}
+
+	pr_info("PAIMON: pil_auth_and_reset() EXIT for %s, returning scm_ret=%d\n",
+		pil->name, (int)scm_ret);
 	return scm_ret;
 err_reset:
 	disable_unprepare_clocks(d->clks, d->clk_count);
 err_clks:
 	disable_regulators(d, d->regs, d->reg_count, false);
 
+	pr_err("PAIMON: pil_auth_and_reset() EXIT (err_clks path) for %s, returning rc=%d\n",
+		pil->name, rc);
 	return rc;
 }
 

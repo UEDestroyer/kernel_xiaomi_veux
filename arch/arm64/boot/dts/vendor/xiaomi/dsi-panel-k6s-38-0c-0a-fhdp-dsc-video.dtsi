@@ -49,6 +49,7 @@
 
 		qcom,mdss-dsi-display-timings {
 			timing@0 {
+				qcom,mdss-dsi-timing-default; // added by veid
 				qcom,mdss-dsi-panel-width = <1080>;
 				qcom,mdss-dsi-panel-height = <2400>;
 				qcom,mdss-dsi-h-front-porch = <120>;

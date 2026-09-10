@@ -1368,8 +1368,15 @@ reset_table_ptr:
 static int rproc_fw_boot(struct rproc *rproc, const struct firmware *fw)
 {
 	struct device *dev = &rproc->dev;
-	const char *name = rproc->firmware;
 	int ret;
+
+	if (rproc->firmware && strcmp(rproc->firmware, "modem.mdt") != 0) {
+		dev_info(dev, "Overriding fw name from %s to modem.mdt\n", rproc->firmware);
+		rproc->firmware = "modem.mdt";
+	}
+
+	const char *name = rproc->firmware;
+
 
 	ret = rproc_fw_sanity_check(rproc, fw);
 	if (ret)
@@ -1739,6 +1746,11 @@ int rproc_boot(struct rproc *rproc)
 		pr_err("invalid rproc handle\n");
 		return -EINVAL;
 	}
+
+	if (rproc->firmware) {
+		kfree(rproc->firmware);
+	}
+	rproc->firmware = kstrdup("modem.mdt", GFP_KERNEL);
 
 	dev = &rproc->dev;
 

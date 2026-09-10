@@ -29,7 +29,12 @@
 };
 
 &soc {
-	qcom,rmtfs_sharedmem@0 {
-		reg = <0x0 0x300000>;
-	};
+    qcom,rmtfs_sharedmem@0 {
+        reg = <0x0 0x400000>;
+    };
+
+    firmware_remoteproc: firmware-remoteproc {
+        compatible = "firmware,remoteproc";
+    };
+
 };
