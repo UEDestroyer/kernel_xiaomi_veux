@@ -1,3 +1,12 @@
+# kernel_xiaomi_veux
+
+This project is a fork of [Evolution-X-Devices/kernel_xiaomi_veux](https://github.com/Evolution-X-Devices/kernel_xiaomi_veux).
+
+## Modifications in this fork
+* Add more layers drm support
+* Added more logs
+
+
 # How do I submit patches to Android Common Kernels
 
 1. BEST: Make all of your changes to upstream Linux. If appropriate, backport to the stable releases.
