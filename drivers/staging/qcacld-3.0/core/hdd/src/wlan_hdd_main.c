@@ -15510,6 +15510,7 @@ int hdd_wlan_startup(struct hdd_context *hdd_ctx)
 	int errno;
 	bool is_imps_enabled;
 
+	printk(KERN_ERR "VEID: >>> hdd_wlan_startup ENTER\n");
 	hdd_enter();
 
 	hdd_action_oui_config(hdd_ctx);
@@ -15529,14 +15530,20 @@ int hdd_wlan_startup(struct hdd_context *hdd_ctx)
 
 	hdd_dp_trace_init(hdd_ctx->config);
 
+	printk(KERN_ERR "VEID: calling hdd_init_regulatory_update_event\n");
 	errno = hdd_init_regulatory_update_event(hdd_ctx);
+	printk(KERN_ERR "VEID: hdd_init_regulatory_update_event returned %d\n", errno);
 	if (errno) {
 		hdd_err("Failed to initialize regulatory update event; errno:%d",
 			errno);
 		goto memdump_deinit;
 	}
 
+
+
+	printk(KERN_ERR "VEID: >>> calling hdd_wlan_start_modules (главный кандидат)\n");
 	errno = hdd_wlan_start_modules(hdd_ctx, false);
+	printk(KERN_ERR "VEID: <<< hdd_wlan_start_modules returned %d\n", errno);
 	if (errno) {
 		hdd_err("Failed to start modules; errno:%d", errno);
 		goto memdump_deinit;
@@ -15587,6 +15594,7 @@ int hdd_wlan_startup(struct hdd_context *hdd_ctx)
 	wlan_hdd_create_mib_stats_lock();
 	wlan_cfg80211_init_interop_issues_ap(hdd_ctx->pdev);
 
+	printk(KERN_ERR "VEID: <<< hdd_wlan_startup SUCCESS\n");
 	hdd_exit();
 
 	return 0;

@@ -1,0 +1,582 @@
+boot/dts/vendor/qcom/yupik.dtsi:		compatible = "rtc6226";
+boot/dts/vendor/qcom/yupik.dtsi:		rtc6226,vdd-supply-voltage = <2800000 2800000>;
+boot/dts/vendor/qcom/yupik.dtsi:		rtc6226,vdd-load = <15000>;
+boot/dts/vendor/qcom/yupik.dtsi:		rtc6226,vio-supply-voltage = <1800000 1800000>;
+boot/dts/vendor/qcom/pm8540.dtsi:		pm8540_1_rtc: qcom,pm8540_1_rtc {
+boot/dts/vendor/qcom/pm8540.dtsi:			compatible = "qcom,pm8941-rtc";
+boot/dts/vendor/qcom/pm8540.dtsi:			reg-names = "rtc", "alarm";
+boot/dts/vendor/qcom/pm6125.dtsi:		pm6125_rtc: qcom,pm6125_rtc {
+boot/dts/vendor/qcom/pm6125.dtsi:			compatible = "qcom,pm8941-rtc";
+boot/dts/vendor/qcom/sa6155-pmic.dtsi:&pm6155_1_rtc {
+boot/dts/vendor/qcom/pm8195.dtsi:		pm8195_1_rtc: qcom,pm8195_1_rtc {
+boot/dts/vendor/qcom/pm8195.dtsi:			compatible = "qcom,pm8941-rtc";
+boot/dts/vendor/qcom/pm8195.dtsi:			reg-names = "rtc", "alarm";
+boot/dts/vendor/qcom/pm5100.dtsi:		pm5100_rtc: rtc@6400 {
+boot/dts/vendor/qcom/pm5100.dtsi:			compatible = "qcom,pm5100-rtc";
+boot/dts/vendor/qcom/pm5100.dtsi:			reg-names = "rtc", "alarm";
+boot/dts/vendor/qcom/pm6155.dtsi:		pm6155_1_rtc: qcom,pm6155_1_rtc {
+boot/dts/vendor/qcom/pm6155.dtsi:			compatible = "qcom,pm8941-rtc";
+boot/dts/vendor/qcom/pm2250.dtsi:		pm2250_rtc: qcom,pm2250_rtc {
+boot/dts/vendor/qcom/pm2250.dtsi:			compatible = "qcom,pm8941-rtc";
+boot/dts/vendor/qcom/holi-pmic-overlay.dtsi:&pmk8350_rtc {
+boot/dts/vendor/qcom/pmk8350.dtsi:		pmk8350_rtc: rtc@6100 {
+boot/dts/vendor/qcom/pmk8350.dtsi:			compatible = "qcom,pmk8350-rtc";
+boot/dts/vendor/qcom/pmk8350.dtsi:			reg-names = "rtc", "alarm";
+boot/dts/vendor/qcom/holi-pmic-overlay-pm6125.dtsi:&pmk8350_rtc {
+boot/dts/vendor/qcom/shima.dtsi:		compatible = "rtc6226";
+boot/dts/vendor/qcom/shima.dtsi:		rtc6226,vdd-supply-voltage = <2800000 2800000>;
+boot/dts/vendor/qcom/shima.dtsi:		rtc6226,vdd-load = <30000>;
+boot/dts/vendor/qcom/shima.dtsi:		rtc6226,vio-supply-voltage = <1800000 1800000 >;
+boot/dts/vendor/qcom/pm8150.dtsi:		pm8150_rtc: qcom,pm8150_rtc {
+boot/dts/vendor/qcom/pm8150.dtsi:			compatible = "qcom,pm8941-rtc";
+boot/dts/vendor/qcom/pm8150.dtsi:			reg-names = "rtc", "alarm";
+boot/dts/vendor/qcom/sa8195-pmic.dtsi:&pm8195_1_rtc {
+boot/dts/vendor/qcom/lahaina.dtsi:		compatible = "rtc6226";
+boot/dts/vendor/qcom/lahaina.dtsi:		rtc6226,vdd-supply-voltage = <2800000 2800000>;
+boot/dts/vendor/qcom/lahaina.dtsi:		rtc6226,vio-supply-voltage = <1800000 1800000 >;
+boot/dts/vendor/qcom/sa8155-pmic-overlay.dtsi:pm8150_1_rtc: &pm8150_rtc {
+boot/dts/vendor/qcom/pmd9650.dtsi:		qcom,pmd9650_rtc {
+boot/dts/vendor/qcom/pmd9650.dtsi:			compatible = "qcom,pm8941-rtc";
+boot/dts/vendor/bindings/interrupt-controller/cirrus,clps711x-intc.txt:10:	RTCMI	RTC compare match
+boot/dts/vendor/bindings/interrupt-controller/img,pdc-intc.txt:			     <30 4 /* level */>, /* Peripheral 0 (RTC) */
+boot/dts/vendor/bindings/interrupt-controller/img,pdc-intc.txt:	rtc0 {
+boot/dts/vendor/bindings/interrupt-controller/img,pdc-intc.txt:		interrupts = <0   /* Peripheral 0 (RTC) */
+boot/dts/vendor/bindings/interrupt-controller/samsung,s3c24xx-irq.txt:	rtc@57000000 {
+boot/dts/vendor/bindings/interrupt-controller/samsung,s3c24xx-irq.txt:		compatible = "samsung,s3c2410-rtc";
+boot/dts/vendor/bindings/power/wakeup-source.txt:3. "has-tpo"			Documentation/devicetree/bindings/rtc/rtc-opal.txt
+boot/dts/vendor/bindings/dma/lpc1850-dmamux.txt:	clock-names = "uartclk", "reg";
+boot/dts/vendor/bindings/soc/fsl/cpm_qe/cpm/i2c.txt:		rtc@68 {
+boot/dts/vendor/bindings/display/armada/marvell,dove-lcd.txt:Device Tree bindings for Armada DRM CRTC driver
+boot/dts/vendor/bindings/clock/ux500.txt:- rtc32k-clock: a subnode with zero clock cells for the 32kHz
+boot/dts/vendor/bindings/clock/ux500.txt:  RTC clock.
+boot/dts/vendor/bindings/clock/ux500.txt:	rtc_clk: rtc32k-clock {
+boot/dts/vendor/bindings/clock/rockchip,px30-cru.txt: - "xin32k" - rtc clock - optional,
+boot/dts/vendor/bindings/clock/rockchip,rk3288-cru.txt: - "xin32k" - rtc clock - optional,
+boot/dts/vendor/bindings/clock/exynos5433-clock.txt:    which generates clocks for PMU/TMU/MCT/WDT/RTC/SECKEY/TZPC IPs.
+boot/dts/vendor/bindings/clock/exynos5260-clock.txt: - "xrtcxti" - input clock from XRTCXTI
+boot/dts/vendor/bindings/clock/rockchip,rk3308-cru.txt: - "xin32k" - rtc clock - optional,
+boot/dts/vendor/bindings/clock/rockchip,rk3399-cru.txt: - "xin32k" - rtc clock - optional,
+boot/dts/vendor/bindings/clock/sifive/fu540-prci.txt:- clocks: Should point to the hfclk device tree node and the rtcclk
+boot/dts/vendor/bindings/clock/sifive/fu540-prci.txt:          device tree node.  The RTC clock here is not a time-of-day clock,
+boot/dts/vendor/bindings/clock/sifive/fu540-prci.txt:The hfclk and rtcclk nodes are required, and represent physical
+boot/dts/vendor/bindings/clock/sifive/fu540-prci.txt:rtcclk: rtcclk {
+boot/dts/vendor/bindings/clock/sifive/fu540-prci.txt:	clock-output-names = "rtcclk";
+boot/dts/vendor/bindings/clock/sifive/fu540-prci.txt:	clocks = <&hfclk>, <&rtcclk>;
+boot/dts/vendor/bindings/clock/imx28-clock.txt:	rtc		40
+boot/dts/vendor/bindings/clock/lpc1850-creg-clk.txt:These clocks are used by the RTC and the Event Router peripherials.
+boot/dts/vendor/bindings/clock/lpc1850-creg-clk.txt:	rtc: rtc@40046000 {
+boot/dts/vendor/bindings/clock/lpc1850-creg-clk.txt:		clock-names = "rtc", "reg";
+boot/dts/vendor/bindings/clock/alphascale,acc.txt:CLKID_AHB_RTC		39
+boot/dts/vendor/bindings/clock/hi3670-clock.txt:		clock-names = "uartclk", "apb_pclk";
+boot/dts/vendor/bindings/clock/imx23-clock.txt:	rtc		25
+boot/dts/vendor/bindings/clock/ingenic,cgu.txt:  "ext" and second the RTC clock source "rtc".
+boot/dts/vendor/bindings/clock/ingenic,cgu.txt:	rtc: clock@1 {
+boot/dts/vendor/bindings/clock/ingenic,cgu.txt:		clocks = <&ext> <&rtc>;
+boot/dts/vendor/bindings/clock/ingenic,cgu.txt:		clock-names: "ext", "rtc";
+boot/dts/vendor/bindings/clock/rockchip,rk3368-cru.txt: - "xin32k" - rtc clock - optional,
+boot/dts/vendor/bindings/clock/imx31-clock.txt:	rtc_gate             40
+boot/dts/vendor/bindings/clock/imx35-clock.txt:	rtc_gate		62
+boot/dts/vendor/bindings/clock/st,stm32-rcc.txt:	4	CLK_HSE_RTC	(HSE division factor for RTC clock)
+boot/dts/vendor/bindings/clock/st,stm32-rcc.txt:	5	CLK_RTC		(real-time clock)
+boot/dts/vendor/bindings/clock/renesas,r9a06g032-sysctrl.txt:        clock-names = "mclk", "rtc", "jtag", "rgmii_ref_ext";
+boot/dts/vendor/bindings/clock/renesas,r9a06g032-sysctrl.txt:		clocks = <&ext_mclk>, <&ext_rtc_clk>,
+boot/dts/vendor/bindings/clock/renesas,r9a06g032-sysctrl.txt:		clock-names = "mclk", "rtc", "jtag", "rgmii_ref_ext";
+boot/dts/vendor/bindings/clock/st,stm32h7-rcc.txt:  write protection (RTC clock).
+boot/dts/vendor/bindings/clock/rockchip,rk3188-cru.txt: - "xin32k" - rtc clock - optional,
+boot/dts/vendor/bindings/clock/prima2-clock.txt:	rtc			0
+boot/dts/vendor/bindings/clock/ste-u300-syscon-clock.txt:0      6     RTC clock
+boot/dts/vendor/bindings/clock/hi3660-clock.txt:		clock-names = "uartclk", "apb_pclk";
+boot/dts/vendor/bindings/arm/atmel-sysregs.txt:- atmel,wakeup-rtc-timer: boolean to enable Real-time Clock Wake-up.
+boot/dts/vendor/bindings/arm/atmel-sysregs.txt:- atmel,wakeup-rtc-timer: boolean to enable Real-time Clock Wake-up.
+boot/dts/vendor/bindings/arm/atmel-sysregs.txt:- atmel,wakeup-rtc-timer: boolean to enable Real-Time Clock wake-up.
+boot/dts/vendor/bindings/arm/atmel-sysregs.txt:		atmel,wakeup-rtc-timer;
+boot/dts/vendor/bindings/arm/freescale/fsl,scu.txt:RTC bindings based on SCU Message Protocol
+boot/dts/vendor/bindings/arm/freescale/fsl,scu.txt:- compatible: should be "fsl,imx8qxp-sc-rtc";
+boot/dts/vendor/bindings/arm/freescale/fsl,scu.txt:		rtc: rtc {
+boot/dts/vendor/bindings/arm/freescale/fsl,scu.txt:			compatible = "fsl,imx8qxp-sc-rtc";
+boot/dts/vendor/bindings/arm/gemini.txt:			/* APB clock or RTC clock */
+boot/dts/vendor/bindings/arm/gemini.txt:				 <&syscon GEMINI_CLK_RTC>;
+boot/dts/vendor/bindings/serial/nxp,lpc1850-uart.txt:- clock-names	: required elements: "uartclk", "reg".
+boot/dts/vendor/bindings/serial/nxp,lpc1850-uart.txt:	clock-names = "uartclk", "reg";
+boot/dts/vendor/bindings/serial/qcom,msm-uartdm.txt:		serial1 = &uartc;
+boot/dts/vendor/bindings/serial/qcom,msm-uartdm.txt:	uartc: serial@1a240000 {
+boot/dts/vendor/bindings/regulator/regulator-max77620.txt:			regulator-name = "vdd-rtc";
+boot/dts/vendor/bindings/regulator/max8907.txt:- mbatt-supply: The input supply for MBATT, BBAT, SDBY, VRTC.
+boot/dts/vendor/bindings/regulator/max8907.txt:  out33v, bbat, sdby, vrtc.
+boot/dts/vendor/bindings/regulator/max8997-regulator.txt:current regulators, rtc, charger controller and other sub-blocks. It is
+boot/dts/vendor/bindings/regulator/tps6586x.txt:  sys, sm[0-2], ldo[0-9] and ldo_rtc
+boot/dts/vendor/bindings/regulator/tps6586x.txt:Note: LDO5 and LDO_RTC is supplied by SYS regulator internally and driver
+boot/dts/vendor/bindings/regulator/mt6323-regulator.txt:  ldo_vgp3, ldo_vcn18, ldo_vsim1, ldo_vsim2, ldo_vrtc, ldo_vcamaf, ldo_vibr,
+boot/dts/vendor/bindings/regulator/mt6323-regulator.txt:			mt6323_vrtc_reg: ldo_vrtc{
+boot/dts/vendor/bindings/regulator/mt6323-regulator.txt:				regulator-name = "vrtc";
+boot/dts/vendor/bindings/net/wireless/qcom,ath10k.txt:	       "wifi_wcss_rtc" for "qcom,ipq4019-wifi" compatible target and
+boot/dts/vendor/bindings/net/wireless/qcom,ath10k.txt:		 <&gcc GCC_WCSS2G_RTC_CLK>;
+boot/dts/vendor/bindings/net/wireless/qcom,ath10k.txt:		      "wifi_wcss_rtc";
+boot/dts/vendor/bindings/media/i2c/tda1997x.txt:pin groups. The video_portcfg device-tree property consists of register mapping
+boot/dts/vendor/bindings/media/i2c/tda1997x.txt: - nxp,vidout-portcfg  : array of pairs mapping VP output pins to pin groups.
+boot/dts/vendor/bindings/media/i2c/tda1997x.txt:		nxp,vidout-portcfg =
+boot/dts/vendor/bindings/media/i2c/tda1997x.txt:		nxp,vidout-portcfg =
+boot/dts/vendor/bindings/media/i2c/tda1997x.txt:		nxp,vidout-portcfg =
+boot/dts/vendor/bindings/timer/ingenic,tcu.txt:  The "pclk", "rtc" and "ext" clocks should be provided. The "tcu" clock
+boot/dts/vendor/bindings/timer/ingenic,tcu.txt:		clocks = <&cgu JZ4770_CLK_RTC
+boot/dts/vendor/bindings/timer/ingenic,tcu.txt:		clock-names = "rtc", "ext", "pclk";
+boot/dts/vendor/bindings/timer/snps,archs-rtc.txt:- compatible : should be "snps,archs-rtc"
+boot/dts/vendor/bindings/timer/snps,archs-rtc.txt:	rtc {
+boot/dts/vendor/bindings/timer/snps,archs-rtc.txt:		compatible = "snps,arc-rtc";
+boot/dts/vendor/bindings/timer/st,stih407-lpc:[See: ../rtc/rtc-st-lpc.txt for RTC options]
+boot/dts/vendor/bindings/timer/st,stih407-lpc:                  ST_LPC_MODE_RTC    [0]
+boot/dts/vendor/bindings/spi/icpdas-lp8841-spi-rtc.txt:* ICP DAS LP-8841 SPI Controller for RTC
+boot/dts/vendor/bindings/spi/icpdas-lp8841-spi-rtc.txt:ICP DAS LP-8841 contains a DS-1302 RTC. RTC is connected to an IO
+boot/dts/vendor/bindings/spi/icpdas-lp8841-spi-rtc.txt:Master output is set on low clock and sensed by the RTC on the rising
+boot/dts/vendor/bindings/spi/icpdas-lp8841-spi-rtc.txt:edge. Master input is set by the RTC on the trailing edge and is sensed
+boot/dts/vendor/bindings/spi/icpdas-lp8841-spi-rtc.txt:- compatible: should be "icpdas,lp8841-spi-rtc"
+boot/dts/vendor/bindings/spi/icpdas-lp8841-spi-rtc.txt:	compatible = "icpdas,lp8841-spi-rtc";
+boot/dts/vendor/bindings/spi/icpdas-lp8841-spi-rtc.txt:	rtc@0 {
+boot/dts/vendor/bindings/i2c/i2c-mux-pca954x.txt:			rtc@51 {
+boot/dts/vendor/bindings/i2c/i2c-octeon.txt:		rtc@68 {
+boot/dts/vendor/bindings/ptp/ptp-qoriq.txt:  <3> - RTC clock input.
+boot/dts/vendor/bindings/ptp/ptp-qoriq.txt:  <3> - RTC clock oscillator
+boot/dts/vendor/bindings/iio/pressure/hp03.txt:	xclr-gpio = <&portc 0 0x0>;
+boot/dts/vendor/bindings/watchdog/st_lpc_wdt.txt:[See: ../rtc/rtc-st-lpc.txt for RTC options]
+boot/dts/vendor/bindings/watchdog/st_lpc_wdt.txt:                  ST_LPC_MODE_RTC    [0]
+boot/dts/vendor/bindings/watchdog/sprd-wdt.txt:		clock-names = "enable", "rtc_enable";
+boot/dts/vendor/bindings/watchdog/sprd-wdt.txt:		clocks = <&clk_aon_apb_gates1 8>, <&clk_aon_apb_rtc_gates 9>;
+boot/dts/vendor/bindings/usb/fcs,fusb302.txt:fusb302: typec-portc@54 {
+boot/dts/vendor/bindings/mfd/ab8500.txt:ab8500-rtc               : 60S                  :              : Real Time Clock
+boot/dts/vendor/bindings/mfd/ab8500.txt:                                               pwm|regulator|rtc|sysctrl|usb]";
+boot/dts/vendor/bindings/mfd/ab8500.txt:         ab8500-rtc {
+boot/dts/vendor/bindings/mfd/ab8500.txt:                 compatible = "stericsson,ab8500-rtc";
+boot/dts/vendor/bindings/mfd/axp20x.txt:be treated as separate entities. The other half is an AC100 RTC/codec
+boot/dts/vendor/bindings/mfd/axp20x.txt:RTC_LDO		: LDO		: ips-supply		: always on
+boot/dts/vendor/bindings/mfd/axp20x.txt:RTC_LDO		: LDO		: ips-supply		: always on
+boot/dts/vendor/bindings/mfd/axp20x.txt:RTC_LDO		: LDO		: ips-supply		: always on
+boot/dts/vendor/bindings/mfd/axp20x.txt:RTC_LDO		: LDO		: ips-supply		: always on
+boot/dts/vendor/bindings/mfd/axp20x.txt:		vdd_rtc: ldo1 {
+boot/dts/vendor/bindings/mfd/axp20x.txt:			regulator-name = "vdd-rtc";
+boot/dts/vendor/bindings/mfd/mc13xxx.txt:- fsl,mc13xxx-uses-rtc : Indicate the RTC is being used
+boot/dts/vendor/bindings/mfd/max8925.txt:max8925-rtc		:		: RTC
+boot/dts/vendor/bindings/mfd/tps65910.txt:  tps65910: vrtc, vio, vdd1, vdd2, vdd3, vdig1, vdig2, vpll, vdac, vaux1,
+boot/dts/vendor/bindings/mfd/tps65910.txt:  tps65911: vrtc, vio, vdd1, vdd2, vddctrl, ldo1, ldo2, ldo3, ldo4, ldo5,
+boot/dts/vendor/bindings/mfd/tps65910.txt:	vcc7-supply: VRTC and VBB input.
+boot/dts/vendor/bindings/mfd/tps65910.txt:	vcc7-supply: VRTC input.
+boot/dts/vendor/bindings/mfd/rn5t618.txt:The RC5T619 additionnally includes USB charger detection and an RTC.
+boot/dts/vendor/bindings/mfd/rn5t618.txt:   LDO9, LDO10, LDORTC1 and LDORTC2.
+boot/dts/vendor/bindings/mfd/qcom,spmi-pmic.txt:example below the rtc device node represents a peripheral of pm8941
+boot/dts/vendor/bindings/mfd/qcom,spmi-pmic.txt:			rtc {
+boot/dts/vendor/bindings/mfd/qcom,spmi-pmic.txt:				compatible = "qcom,rtc";
+boot/dts/vendor/bindings/mfd/rohm,bd71837-pmic.txt:	rtc@0 {
+boot/dts/vendor/bindings/mfd/rohm,bd71837-pmic.txt:		compatible = "company,my-rtc";
+boot/dts/vendor/bindings/mfd/as3711.txt:supplies, a battery charger and an RTC. So far only bindings for the two stepup
+boot/dts/vendor/bindings/mfd/88pm860x.txt:88pm860x-rtc		:		: RTC
+boot/dts/vendor/bindings/mfd/88pm860x.txt:		rtc {
+boot/dts/vendor/bindings/mfd/88pm860x.txt:			marvell,88pm860x-vrtc = <1>;
+boot/dts/vendor/bindings/mfd/da9055.txt:da9055-rtc		:		: RTC
+boot/dts/vendor/bindings/mfd/twl-familly.txt:    twl_rtc {
+boot/dts/vendor/bindings/mfd/twl-familly.txt:        compatible = "ti,twl_rtc";
+boot/dts/vendor/bindings/mfd/da9063.txt:da9063-rtc              :               : Real-Time Clock (DA9063 only)
+boot/dts/vendor/bindings/mfd/da9063.txt:- rtc : This node defines settings for the Real-Time Clock associated with
+boot/dts/vendor/bindings/mfd/da9063.txt:  the DA9063 only. The RTC is not present in DA9063L. There are currently
+boot/dts/vendor/bindings/mfd/da9063.txt:  no entries in this binding, however compatible = "dlg,da9063-rtc" should
+boot/dts/vendor/bindings/mfd/da9063.txt:		rtc {
+boot/dts/vendor/bindings/mfd/da9063.txt:			compatible = "dlg,da9063-rtc";
+boot/dts/vendor/bindings/mfd/qcom-pm8xxx.txt:		    "qcom,pm8058-rtc"
+boot/dts/vendor/bindings/mfd/qcom-pm8xxx.txt:		    "qcom,pm8921-rtc"
+boot/dts/vendor/bindings/mfd/qcom-pm8xxx.txt:		    "qcom,pm8941-rtc"
+boot/dts/vendor/bindings/mfd/qcom-pm8xxx.txt:		    "qcom,pm8018-rtc"
+boot/dts/vendor/bindings/mfd/qcom-pm8xxx.txt:		    "qcom,pmk8350-rtc"
+boot/dts/vendor/bindings/mfd/qcom-pm8xxx.txt:		    "qcom,pm5100-rtc"
+boot/dts/vendor/bindings/mfd/qcom-pm8xxx.txt:	Definition: single entry specifying the base address of the RTC registers
+boot/dts/vendor/bindings/mfd/qcom-pm8xxx.txt:	Definition: single entry specifying the RTC's alarm interrupt
+boot/dts/vendor/bindings/mfd/qcom-pm8xxx.txt:	Definition: indicates that the setting of RTC time is allowed by
+boot/dts/vendor/bindings/mfd/qcom-pm8xxx.txt:		rtc@11d {
+boot/dts/vendor/bindings/mfd/qcom-pm8xxx.txt:			compatible = "qcom,pm8921-rtc";
+boot/dts/vendor/bindings/mfd/samsung,sec-core.txt:of multi-function devices which include voltage and current regulators, RTC,
+boot/dts/vendor/bindings/mfd/ac100.txt:X-Powers AC100 Codec/RTC IC Device Tree bindings
+boot/dts/vendor/bindings/mfd/ac100.txt:AC100 is a audio codec and RTC subsystem combo IC. The 2 parts are
+boot/dts/vendor/bindings/mfd/ac100.txt:  - rtc
+boot/dts/vendor/bindings/mfd/ac100.txt:    - compatible:		"x-powers,ac100-rtc"
+boot/dts/vendor/bindings/mfd/ac100.txt:    - clock-output-names:	"cko1_rtc", "cko2_rtc", "cko3_rtc"
+boot/dts/vendor/bindings/mfd/ac100.txt:	ac100_rtc: rtc {
+boot/dts/vendor/bindings/mfd/ac100.txt:		compatible = "x-powers,ac100-rtc";
+boot/dts/vendor/bindings/mfd/ac100.txt:		clock-output-names = "cko1_rtc", "cko2_rtc", "cko3_rtc";
+boot/dts/vendor/bindings/mfd/max77802.txt:a Real-Time-Clock (RTC) and a I2C interface to program the individual
+boot/dts/vendor/bindings/mfd/max77802.txt:regulators, clocks outputs and the RTC.
+boot/dts/vendor/bindings/mfd/mt6397.txt:- RTC
+boot/dts/vendor/bindings/mfd/mt6397.txt:- rtc
+boot/dts/vendor/bindings/mfd/mt6397.txt:		- compatible: "mediatek,mt6323-rtc"
+boot/dts/vendor/bindings/mfd/mt6397.txt:		- compatible: "mediatek,mt6397-rtc"
+boot/dts/vendor/bindings/mfd/mt6397.txt:	For details, see ../rtc/rtc-mt6397.txt
+boot/dts/vendor/bindings/mfd/rohm,bd70528-pmic.txt:LED Drivers. Also included are 4 GPIOs, a real-time clock (RTC), a 32kHz
+boot/dts/vendor/bindings/mfd/as3722.txt:  interrupt request from internal sub-blocks like RTC, regulators, GPIOs as well
+boot/dts/vendor/bindings/mfd/sprd,sc27xx-pmic.txt:- IC level interface, such as power on/off control, RTC and typec and so on.
+boot/dts/vendor/bindings/mfd/max77686.txt:MAX77686 is a Multifunction device with PMIC, RTC and Charger on chip. It is
+boot/dts/vendor/bindings/mfd/max77686.txt:are addressed using same i2c slave address whereas RTC submodule uses
+boot/dts/vendor/bindings/mfd/da9062.txt:da9062-rtc              :               : Real-Time Clock
+boot/dts/vendor/bindings/mfd/da9062.txt:- rtc : This node defines settings required for the Real-Time Clock associated
+boot/dts/vendor/bindings/mfd/da9062.txt:  compatible = "dlg,da9062-rtc" should be added if a node is created.
+boot/dts/vendor/bindings/mfd/da9062.txt:		rtc {
+boot/dts/vendor/bindings/mfd/da9062.txt:			compatible = "dlg,da9062-rtc";
+boot/dts/vendor/bindings/mfd/motorola-cpcap.txt:- ../rtc/cpcap-rtc.txt
+boot/dts/vendor/bindings/bt-fm/rtc6226_fm.txt:- compatible: "rtc6226"
+boot/dts/vendor/bindings/bt-fm/rtc6226_fm.txt:	rtc6226 {
+boot/dts/vendor/bindings/bt-fm/rtc6226_fm.txt:		compatible = "rtc6226";
+boot/dts/vendor/bindings/pinctrl/cortina,gemini-pinctrl.txt:		rtc_default_pins: pinctrl-rtc {
+boot/dts/vendor/bindings/pinctrl/cortina,gemini-pinctrl.txt:				function = "rtc";
+boot/dts/vendor/bindings/pinctrl/cortina,gemini-pinctrl.txt:				groups = "rtcgrp";
+boot/dts/vendor/bindings/pinctrl/nvidia,tegra20-pinmux.txt:  pllp_out4, pwm, pwr_intr, pwr_on, rsvd1, rsvd2, rsvd3, rsvd4, rtck,
+boot/dts/vendor/bindings/pinctrl/nvidia,tegra20-pinmux.txt:  spi3, spi4, trace, twc, uarta, uartb, uartc, uartd, uarte, ulpi,
+boot/dts/vendor/bindings/pinctrl/nvidia,tegra210-pinmux.txt:    gps_en_pi2, gps_rst_pi3, hdmi_cec_pcc0, hdmi_int_dp_hpd_pcc1, jtag_rtck,
+boot/dts/vendor/bindings/pinctrl/nvidia,tegra210-pinmux.txt:    sys, touch, uart, uarta, uartb, uartc, uartd, usb, vgp1, vgp2, vgp3, vgp4,
+boot/dts/vendor/bindings/pinctrl/nvidia,tegra30-pinmux.txt:    sdmmc4_cmd_pt7, pu0, pu1, pu2, pu3, pu4, pu5, pu6, jtag_rtck_pu7, pv0,
+boot/dts/vendor/bindings/pinctrl/nvidia,tegra30-pinmux.txt:  rsvd3, rsvd4, rtck, sata, sdmmc1, sdmmc2, sdmmc3, sdmmc4, spdif, spi1,
+boot/dts/vendor/bindings/pinctrl/nvidia,tegra30-pinmux.txt:  uartb, uartc, uartd, uarte, ulpi, vgp1, vgp2, vgp3, vgp4, vgp5, vgp6,
+boot/dts/vendor/bindings/pinctrl/nvidia,tegra124-pinmux.txt:	cam_i2c_sda_pbb2, pbb3, pbb4, pbb5, pbb6, pbb7, pcc2, jtag_rtck,
+boot/dts/vendor/bindings/pinctrl/nvidia,tegra124-pinmux.txt:  uartb, uartc, uartd, ulpi, usb, vgp1, vgp2, vgp3, vgp4, vgp5, vgp6,
+boot/dts/vendor/bindings/pinctrl/nvidia,tegra124-pinmux.txt:  dp, rtck, sys, clk tmds, csi, dsi_b
+boot/dts/vendor/bindings/pinctrl/nvidia,tegra114-pinmux.txt:  spi4, spi5, spi6, sysclk, trace, uarta, uartb, uartc, uartd, ulpi,
+boot/dts/vendor/bindings/rng/sparc_sun_oracle_rng.txt:PS: see as well prtconfs.git by DaveM
+boot/dts/vendor/bindings/rtc/rtc-meson-vrtc.txt:* Amlogic Virtual RTC (VRTC)
+boot/dts/vendor/bindings/rtc/rtc-meson-vrtc.txt:This is a Linux interface to an RTC managed by firmware, hence it's
+boot/dts/vendor/bindings/rtc/rtc-meson-vrtc.txt:- compatible: should be "amlogic,meson-vrtc"
+boot/dts/vendor/bindings/rtc/rtc-meson-vrtc.txt:	vrtc: rtc@0a8 {
+boot/dts/vendor/bindings/rtc/rtc-meson-vrtc.txt:		compatible = "amlogic,meson-vrtc";
+boot/dts/vendor/bindings/rtc/maxim-ds1302.txt:* Maxim/Dallas Semiconductor DS-1302 RTC
+boot/dts/vendor/bindings/rtc/maxim-ds1302.txt:Master output is set on low clock and sensed by the RTC on the rising
+boot/dts/vendor/bindings/rtc/maxim-ds1302.txt:edge. Master input is set by the RTC on the trailing edge and is sensed
+boot/dts/vendor/bindings/rtc/maxim-ds1302.txt:	compatible = "icpdas,lp8841-spi-rtc";
+boot/dts/vendor/bindings/rtc/maxim-ds1302.txt:	rtc@0 {
+boot/dts/vendor/bindings/rtc/pcf8563.txt:* Philips PCF8563/Epson RTC8564 Real Time Clock
+boot/dts/vendor/bindings/rtc/pcf8563.txt:Philips PCF8563/Epson RTC8564 Real Time Clock
+boot/dts/vendor/bindings/rtc/pcf8563.txt:	"epson,rtc8564" or
+boot/dts/vendor/bindings/rtc/s3c-rtc.txt:    * "samsung,s3c2410-rtc" - for controllers compatible with s3c2410 rtc.
+boot/dts/vendor/bindings/rtc/s3c-rtc.txt:    * "samsung,s3c2416-rtc" - for controllers compatible with s3c2416 rtc.
+boot/dts/vendor/bindings/rtc/s3c-rtc.txt:    * "samsung,s3c2443-rtc" - for controllers compatible with s3c2443 rtc.
+boot/dts/vendor/bindings/rtc/s3c-rtc.txt:    * "samsung,s3c6410-rtc" - for controllers compatible with s3c6410 rtc.
+boot/dts/vendor/bindings/rtc/s3c-rtc.txt:    * "samsung,exynos3250-rtc" - (deprecated) for controllers compatible with
+boot/dts/vendor/bindings/rtc/s3c-rtc.txt:                                 exynos3250 rtc (use "samsung,s3c6410-rtc").
+boot/dts/vendor/bindings/rtc/s3c-rtc.txt:  interrupt number is the rtc alarm interrupt and second interrupt number
+boot/dts/vendor/bindings/rtc/s3c-rtc.txt:  is the rtc tick interrupt. The number of cells representing a interrupt
+boot/dts/vendor/bindings/rtc/s3c-rtc.txt:- clocks: Must contain a list of phandle and clock specifier for the rtc
+boot/dts/vendor/bindings/rtc/s3c-rtc.txt:- clock-names: Must contain "rtc" and for a s3c6410 compatible controller,
+boot/dts/vendor/bindings/rtc/s3c-rtc.txt:               a "rtc_src" sorted in the same order as the clocks property.
+boot/dts/vendor/bindings/rtc/s3c-rtc.txt:	rtc@10070000 {
+boot/dts/vendor/bindings/rtc/s3c-rtc.txt:		compatible = "samsung,s3c6410-rtc";
+boot/dts/vendor/bindings/rtc/s3c-rtc.txt:		clocks = <&clock CLK_RTC>, <&s2mps11_osc S2MPS11_CLK_AP>;
+boot/dts/vendor/bindings/rtc/s3c-rtc.txt:		clock-names = "rtc", "rtc_src";
+boot/dts/vendor/bindings/rtc/sa1100-rtc.txt:- compatible: should be "mrvl,sa1100-rtc"
+boot/dts/vendor/bindings/rtc/sa1100-rtc.txt:- interrupts: Should be two. The first interrupt number is the rtc alarm
+boot/dts/vendor/bindings/rtc/sa1100-rtc.txt:  interrupt and the second interrupt number is the rtc hz interrupt.
+boot/dts/vendor/bindings/rtc/sa1100-rtc.txt:	rtc: rtc@d4010000 {
+boot/dts/vendor/bindings/rtc/sa1100-rtc.txt:		compatible = "mrvl,mmp-rtc";
+boot/dts/vendor/bindings/rtc/sa1100-rtc.txt:		interrupt-names = "rtc 1Hz", "rtc alarm";
+boot/dts/vendor/bindings/rtc/digicolor-rtc.txt:- compatible: should be "cnxt,cx92755-rtc"
+boot/dts/vendor/bindings/rtc/digicolor-rtc.txt:- interrupts: rtc alarm interrupt
+boot/dts/vendor/bindings/rtc/digicolor-rtc.txt:	rtc@f0000c30 {
+boot/dts/vendor/bindings/rtc/digicolor-rtc.txt:		compatible = "cnxt,cx92755-rtc";
+boot/dts/vendor/bindings/rtc/allwinner,sun6i-a31-rtc.yaml:$id: http://devicetree.org/schemas/rtc/allwinner,sun6i-a31-rtc.yaml#
+boot/dts/vendor/bindings/rtc/allwinner,sun6i-a31-rtc.yaml:title: Allwinner A31 RTC Device Tree Bindings
+boot/dts/vendor/bindings/rtc/allwinner,sun6i-a31-rtc.yaml:      - const: allwinner,sun6i-a31-rtc
+boot/dts/vendor/bindings/rtc/allwinner,sun6i-a31-rtc.yaml:      - const: allwinner,sun8i-a23-rtc
+boot/dts/vendor/bindings/rtc/allwinner,sun6i-a31-rtc.yaml:      - const: allwinner,sun8i-h3-rtc
+boot/dts/vendor/bindings/rtc/allwinner,sun6i-a31-rtc.yaml:      - const: allwinner,sun8i-r40-rtc
+boot/dts/vendor/bindings/rtc/allwinner,sun6i-a31-rtc.yaml:      - const: allwinner,sun8i-v3-rtc
+boot/dts/vendor/bindings/rtc/allwinner,sun6i-a31-rtc.yaml:      - const: allwinner,sun50i-h5-rtc
+boot/dts/vendor/bindings/rtc/allwinner,sun6i-a31-rtc.yaml:          - const: allwinner,sun50i-a64-rtc
+boot/dts/vendor/bindings/rtc/allwinner,sun6i-a31-rtc.yaml:          - const: allwinner,sun8i-h3-rtc
+boot/dts/vendor/bindings/rtc/allwinner,sun6i-a31-rtc.yaml:      - const: allwinner,sun50i-h6-rtc
+boot/dts/vendor/bindings/rtc/allwinner,sun6i-a31-rtc.yaml:      - description: RTC Alarm 0
+boot/dts/vendor/bindings/rtc/allwinner,sun6i-a31-rtc.yaml:      - description: RTC Alarm 1
+boot/dts/vendor/bindings/rtc/allwinner,sun6i-a31-rtc.yaml:      The RTC provides up to three clocks
+boot/dts/vendor/bindings/rtc/allwinner,sun6i-a31-rtc.yaml:  - $ref: "rtc.yaml#"
+boot/dts/vendor/bindings/rtc/allwinner,sun6i-a31-rtc.yaml:            const: allwinner,sun6i-a31-rtc
+boot/dts/vendor/bindings/rtc/allwinner,sun6i-a31-rtc.yaml:              - allwinner,sun8i-a23-rtc
+boot/dts/vendor/bindings/rtc/allwinner,sun6i-a31-rtc.yaml:              - allwinner,sun8i-r40-rtc
+boot/dts/vendor/bindings/rtc/allwinner,sun6i-a31-rtc.yaml:              - allwinner,sun8i-v3-rtc
+boot/dts/vendor/bindings/rtc/allwinner,sun6i-a31-rtc.yaml:              - allwinner,sun8i-h3-rtc
+boot/dts/vendor/bindings/rtc/allwinner,sun6i-a31-rtc.yaml:              - allwinner,sun50i-h5-rtc
+boot/dts/vendor/bindings/rtc/allwinner,sun6i-a31-rtc.yaml:            const: allwinner,sun50i-h6-rtc
+boot/dts/vendor/bindings/rtc/allwinner,sun6i-a31-rtc.yaml:            const: allwinner,sun8i-r40-rtc
+boot/dts/vendor/bindings/rtc/allwinner,sun6i-a31-rtc.yaml:    rtc: rtc@1f00000 {
+boot/dts/vendor/bindings/rtc/allwinner,sun6i-a31-rtc.yaml:        compatible = "allwinner,sun6i-a31-rtc";
+boot/dts/vendor/bindings/rtc/via,vt8500-rtc.txt:- compatible : "via,vt8500-rtc"
+boot/dts/vendor/bindings/rtc/via,vt8500-rtc.txt:	rtc@d8100000 {
+boot/dts/vendor/bindings/rtc/via,vt8500-rtc.txt:		compatible = "via,vt8500-rtc";
+boot/dts/vendor/bindings/rtc/epson,rx6110.txt:	rtc: rtc@32 {
+boot/dts/vendor/bindings/rtc/epson,rx6110.txt:	rtc: rtc@3 {
+boot/dts/vendor/bindings/rtc/rtc-opal.txt:- compatible: Should be "ibm,opal-rtc"
+boot/dts/vendor/bindings/rtc/rtc-opal.txt:	rtc {
+boot/dts/vendor/bindings/rtc/rtc-opal.txt:		compatible = "ibm,opal-rtc";
+boot/dts/vendor/bindings/rtc/rtc-mxc_v2.txt:* i.MX53 Secure Real Time Clock (SRTC)
+boot/dts/vendor/bindings/rtc/rtc-mxc_v2.txt:- compatible: should be: "fsl,imx53-rtc"
+boot/dts/vendor/bindings/rtc/rtc-mxc_v2.txt:- clocks: should contain the phandle for the rtc clock
+boot/dts/vendor/bindings/rtc/rtc-mxc_v2.txt:- interrupts: rtc alarm interrupt
+boot/dts/vendor/bindings/rtc/rtc-mxc_v2.txt:rtc@53fa4000 {
+boot/dts/vendor/bindings/rtc/rtc-mxc_v2.txt:	compatible = "fsl,imx53-rtc";
+boot/dts/vendor/bindings/rtc/rtc-mxc_v2.txt:	clocks = <&clks IMX5_CLK_SRTC_GATE>;
+boot/dts/vendor/bindings/rtc/rtc-st-lpc.txt:STMicroelectronics Low Power Controller (LPC) - RTC
+boot/dts/vendor/bindings/rtc/rtc-st-lpc.txt:                  ST_LPC_MODE_RTC    [0]
+boot/dts/vendor/bindings/rtc/rtc-st-lpc.txt:		st,lpc-mode	= <ST_LPC_MODE_RTC>;
+boot/dts/vendor/bindings/rtc/haoyu,hym8563.txt:The HYM8563 provides basic rtc and alarm functionality
+boot/dts/vendor/bindings/rtc/haoyu,hym8563.txt:- interrupts: rtc alarm/event interrupt
+boot/dts/vendor/bindings/rtc/nvidia,tegra20-rtc.txt:The Tegra RTC maintains seconds and milliseconds counters, and five alarm
+boot/dts/vendor/bindings/rtc/nvidia,tegra20-rtc.txt:- compatible : For Tegra20, must contain "nvidia,tegra20-rtc".  Otherwise,
+boot/dts/vendor/bindings/rtc/nvidia,tegra20-rtc.txt:  must contain '"nvidia,<chip>-rtc", "nvidia,tegra20-rtc"', where <chip>
+boot/dts/vendor/bindings/rtc/nvidia,tegra20-rtc.txt:	compatible = "nvidia,tegra20-rtc";
+boot/dts/vendor/bindings/rtc/cpcap-rtc.txt:Motorola CPCAP PMIC RTC
+boot/dts/vendor/bindings/rtc/cpcap-rtc.txt:- compatible: should contain "motorola,cpcap-rtc"
+boot/dts/vendor/bindings/rtc/cpcap-rtc.txt:	cpcap_rtc: rtc {
+boot/dts/vendor/bindings/rtc/cpcap-rtc.txt:		compatible = "motorola,cpcap-rtc";
+boot/dts/vendor/bindings/rtc/realtek,rtd119x.txt:- compatible :  Should be "realtek,rtd1295-rtc"
+boot/dts/vendor/bindings/rtc/realtek,rtd119x.txt:	rtc@9801b600 {
+boot/dts/vendor/bindings/rtc/realtek,rtd119x.txt:		clocks = <&clkc RTD1295_CLK_EN_MISC_RTC>;
+boot/dts/vendor/bindings/rtc/moxa,moxart-rtc.txt:- compatible : Should be "moxa,moxart-rtc"
+boot/dts/vendor/bindings/rtc/moxa,moxart-rtc.txt:- gpio-rtc-sclk : RTC sclk gpio, with zero flags
+boot/dts/vendor/bindings/rtc/moxa,moxart-rtc.txt:- gpio-rtc-data : RTC data gpio, with zero flags
+boot/dts/vendor/bindings/rtc/moxa,moxart-rtc.txt:- gpio-rtc-reset : RTC reset gpio, with zero flags
+boot/dts/vendor/bindings/rtc/moxa,moxart-rtc.txt:	rtc: rtc {
+boot/dts/vendor/bindings/rtc/moxa,moxart-rtc.txt:		compatible = "moxa,moxart-rtc";
+boot/dts/vendor/bindings/rtc/moxa,moxart-rtc.txt:		gpio-rtc-sclk = <&gpio 5 0>;
+boot/dts/vendor/bindings/rtc/moxa,moxart-rtc.txt:		gpio-rtc-data = <&gpio 6 0>;
+boot/dts/vendor/bindings/rtc/moxa,moxart-rtc.txt:		gpio-rtc-reset = <&gpio 7 0>;
+boot/dts/vendor/bindings/rtc/pcf85363.txt:- interrupts: IRQ line for the RTC (not implemented).
+boot/dts/vendor/bindings/rtc/rtc-sh.txt:- compatible: Should be "renesas,r7s72100-rtc" and "renesas,sh-rtc" as a
+boot/dts/vendor/bindings/rtc/rtc-sh.txt:- clocks: The functional clock source for the RTC controller must be listed
+boot/dts/vendor/bindings/rtc/rtc-sh.txt:rtc: rtc@fcff1000 {
+boot/dts/vendor/bindings/rtc/rtc-sh.txt:	compatible = "renesas,r7s72100-rtc", "renesas,sh-rtc";
+boot/dts/vendor/bindings/rtc/rtc-sh.txt:	clocks = <&mstp6_clks R7S72100_CLK_RTC>, <&rtc_x1_clk>,
+boot/dts/vendor/bindings/rtc/rtc-sh.txt:		 <&rtc_x3_clk>, <&extal_clk>;
+boot/dts/vendor/bindings/rtc/rtc-sh.txt:	clock-names = "fck", "rtc_x1", "rtc_x3", "extal";
+boot/dts/vendor/bindings/rtc/xlnx-rtc.txt:RTC controller for the Xilinx Zynq MPSoC Real Time Clock
+boot/dts/vendor/bindings/rtc/xlnx-rtc.txt:- compatible: Should be "xlnx,zynqmp-rtc"
+boot/dts/vendor/bindings/rtc/xlnx-rtc.txt:- interrupts: IRQ lines for the RTC.
+boot/dts/vendor/bindings/rtc/xlnx-rtc.txt:rtc: rtc@ffa60000 {
+boot/dts/vendor/bindings/rtc/xlnx-rtc.txt:	compatible = "xlnx,zynqmp-rtc";
+boot/dts/vendor/bindings/rtc/microchip,pic32-rtc.txt:The RTCC keeps time in hours, minutes, and seconds, and one half second. It
+boot/dts/vendor/bindings/rtc/microchip,pic32-rtc.txt:- compatible: should be: "microchip,pic32mzda-rtc"
+boot/dts/vendor/bindings/rtc/microchip,pic32-rtc.txt:- interrupts: RTC alarm/event interrupt
+boot/dts/vendor/bindings/rtc/microchip,pic32-rtc.txt:	rtc: rtc@1f8c0000 {
+boot/dts/vendor/bindings/rtc/microchip,pic32-rtc.txt:		compatible = "microchip,pic32mzda-rtc";
+boot/dts/vendor/bindings/rtc/maxim,ds1742.txt:- reg: Physical base address of the RTC and length of memory
+boot/dts/vendor/bindings/rtc/maxim,ds1742.txt:	rtc: rtc@10000000 {
+boot/dts/vendor/bindings/rtc/nxp,lpc1788-rtc.txt:The LPC1788 RTC provides calendar and clock functionality
+boot/dts/vendor/bindings/rtc/nxp,lpc1788-rtc.txt:- compatible	: must contain "nxp,lpc1788-rtc"
+boot/dts/vendor/bindings/rtc/nxp,lpc1788-rtc.txt:- clocks	: Must contain clock specifiers for rtc and register clock
+boot/dts/vendor/bindings/rtc/nxp,lpc1788-rtc.txt:- clock-names	: Must contain "rtc" and "reg"
+boot/dts/vendor/bindings/rtc/nxp,lpc1788-rtc.txt:rtc: rtc@40046000 {
+boot/dts/vendor/bindings/rtc/nxp,lpc1788-rtc.txt:	compatible = "nxp,lpc1788-rtc";
+boot/dts/vendor/bindings/rtc/nxp,lpc1788-rtc.txt:	clock-names = "rtc", "reg";
+boot/dts/vendor/bindings/rtc/rtc-palmas.txt:Palmas RTC controller bindings
+boot/dts/vendor/bindings/rtc/rtc-palmas.txt:  - "ti,palmas-rtc" for palma series of the RTC controller
+boot/dts/vendor/bindings/rtc/rtc-palmas.txt:- interrupts: Interrupt number of RTC submodule on device.
+boot/dts/vendor/bindings/rtc/rtc-palmas.txt:	TPS80036 supports the backup battery for powering the RTC when main
+boot/dts/vendor/bindings/rtc/rtc-palmas.txt:		palmas_rtc: rtc {
+boot/dts/vendor/bindings/rtc/rtc-palmas.txt:			compatible = "ti,palmas-rtc";
+boot/dts/vendor/bindings/rtc/imxdi-rtc.txt:- compatible: should be: "fsl,imx25-rtc"
+boot/dts/vendor/bindings/rtc/imxdi-rtc.txt:- clocks: should contain the phandle for the rtc clock
+boot/dts/vendor/bindings/rtc/imxdi-rtc.txt:- interrupts: rtc alarm interrupt
+boot/dts/vendor/bindings/rtc/imxdi-rtc.txt:rtc@53ffc000 {
+boot/dts/vendor/bindings/rtc/imxdi-rtc.txt:	compatible = "fsl,imx25-rtc";
+boot/dts/vendor/bindings/rtc/atmel,at91rm9200-rtc.txt:- compatible: should be: "atmel,at91rm9200-rtc" or "atmel,at91sam9x5-rtc"
+boot/dts/vendor/bindings/rtc/atmel,at91rm9200-rtc.txt:- interrupts: rtc alarm/event interrupt
+boot/dts/vendor/bindings/rtc/atmel,at91rm9200-rtc.txt:rtc@fffffe00 {
+boot/dts/vendor/bindings/rtc/atmel,at91rm9200-rtc.txt:	compatible = "atmel,at91rm9200-rtc";
+boot/dts/vendor/bindings/rtc/isil,isl1208.txt:Intersil ISL1209/19 I2C RTC/Alarm chip with event in
+boot/dts/vendor/bindings/rtc/isil,isl1208.txt:	isl1219: rtc@68 {
+boot/dts/vendor/bindings/rtc/olpc-xo1-rtc.txt:OLPC XO-1 RTC
+boot/dts/vendor/bindings/rtc/olpc-xo1-rtc.txt: - compatible : "olpc,xo1-rtc"
+boot/dts/vendor/bindings/rtc/isil,isl12057.txt:Intersil ISL12057 I2C RTC/Alarm chip
+boot/dts/vendor/bindings/rtc/isil,isl12057.txt:RTC alarm rings. In order to mark the device has a wakeup source and
+boot/dts/vendor/bindings/rtc/isil,isl12057.txt:				rtc_alarm_pin: rtc_alarm_pin {
+boot/dts/vendor/bindings/rtc/isil,isl12057.txt:		pinctrl-0 = <&rtc_alarm_pin>;
+boot/dts/vendor/bindings/rtc/nxp,pcf8523.txt:pcf8523: rtc@68 {
+boot/dts/vendor/bindings/rtc/epson,rx8900.txt:	rtc: rtc@32 {
+boot/dts/vendor/bindings/rtc/lpc32xx-rtc.txt:- compatible: must be "nxp,lpc3220-rtc"
+boot/dts/vendor/bindings/rtc/lpc32xx-rtc.txt:- interrupts: The RTC interrupt
+boot/dts/vendor/bindings/rtc/lpc32xx-rtc.txt:	rtc@40024000 {
+boot/dts/vendor/bindings/rtc/lpc32xx-rtc.txt:		compatible = "nxp,lpc3220-rtc";
+boot/dts/vendor/bindings/rtc/abracon,abx80x.txt:Abracon ABX80X I2C ultra low power RTC/Alarm chip
+boot/dts/vendor/bindings/rtc/orion-rtc.txt:RTC controller for the Kirkwood, the Dove, the Armada 370 and the
+boot/dts/vendor/bindings/rtc/orion-rtc.txt:- compatible : Should be "marvell,orion-rtc"
+boot/dts/vendor/bindings/rtc/orion-rtc.txt:- interrupts: IRQ line for the RTC.
+boot/dts/vendor/bindings/rtc/orion-rtc.txt:rtc@10300 {
+boot/dts/vendor/bindings/rtc/orion-rtc.txt:        compatible = "marvell,orion-rtc";
+boot/dts/vendor/bindings/rtc/armada-380-rtc.txt:RTC controller for the Armada 38x, 7K and 8K SoCs
+boot/dts/vendor/bindings/rtc/armada-380-rtc.txt:	"marvell,armada-380-rtc" for Armada 38x SoC
+boot/dts/vendor/bindings/rtc/armada-380-rtc.txt:	"marvell,armada-8k-rtc" for Aramda 7K/8K SoCs
+boot/dts/vendor/bindings/rtc/armada-380-rtc.txt:  * "rtc" for the RTC registers
+boot/dts/vendor/bindings/rtc/armada-380-rtc.txt:  * "rtc-soc" for the SoC related registers and among them the one
+boot/dts/vendor/bindings/rtc/armada-380-rtc.txt:- interrupts: IRQ line for the RTC.
+boot/dts/vendor/bindings/rtc/armada-380-rtc.txt:rtc@a3800 {
+boot/dts/vendor/bindings/rtc/armada-380-rtc.txt:	compatible = "marvell,armada-380-rtc";
+boot/dts/vendor/bindings/rtc/armada-380-rtc.txt:	reg-names = "rtc", "rtc-soc";
+boot/dts/vendor/bindings/rtc/isil,isl12026.txt:ISL12026 I2C RTC/EEPROM
+boot/dts/vendor/bindings/rtc/isil,isl12026.txt:ISL12026 is an I2C RTC/EEPROM combination device.  The RTC and control
+boot/dts/vendor/bindings/rtc/isil,isl12026.txt:at bus address 0x57.  The canonical "reg" value will be for the RTC portion.
+boot/dts/vendor/bindings/rtc/isil,isl12026.txt:	rtc@6f {
+boot/dts/vendor/bindings/rtc/rtc-cmos.txt: Motorola mc146818 compatible RTC
+boot/dts/vendor/bindings/rtc/rtc-cmos.txt:	rtc@70 {
+boot/dts/vendor/bindings/rtc/google,goldfish-rtc.txt:Android Goldfish RTC
+boot/dts/vendor/bindings/rtc/google,goldfish-rtc.txt:Android Goldfish RTC device used by Android emulator.
+boot/dts/vendor/bindings/rtc/google,goldfish-rtc.txt:- compatible : should contain "google,goldfish-rtc"
+boot/dts/vendor/bindings/rtc/google,goldfish-rtc.txt:		compatible = "google,goldfish-rtc";
+boot/dts/vendor/bindings/rtc/epson,rtc7301.txt:EPSON TOYOCOM RTC-7301SF/DG
+boot/dts/vendor/bindings/rtc/epson,rtc7301.txt:- compatible: Should be "epson,rtc7301sf" or "epson,rtc7301dg"
+boot/dts/vendor/bindings/rtc/epson,rtc7301.txt:rtc: rtc@44a00000 {
+boot/dts/vendor/bindings/rtc/epson,rtc7301.txt:	compatible = "epson,rtc7301dg";
+boot/dts/vendor/bindings/rtc/st,stm32-rtc.txt:  - "st,stm32-rtc" for devices compatible with stm32(f4/f7).
+boot/dts/vendor/bindings/rtc/st,stm32-rtc.txt:  - "st,stm32h7-rtc" for devices compatible with stm32h7.
+boot/dts/vendor/bindings/rtc/st,stm32-rtc.txt:  - "st,stm32mp1-rtc" for devices compatible with stm32mp1.
+boot/dts/vendor/bindings/rtc/st,stm32-rtc.txt:- reg: address range of rtc register set.
+boot/dts/vendor/bindings/rtc/st,stm32-rtc.txt:  - "rtc_ck": RTC clock source.
+boot/dts/vendor/bindings/rtc/st,stm32-rtc.txt:  - "pclk": RTC APB interface clock.
+boot/dts/vendor/bindings/rtc/st,stm32-rtc.txt:- clock-names: must be "rtc_ck" and "pclk".
+boot/dts/vendor/bindings/rtc/st,stm32-rtc.txt:- interrupts: rtc alarm interrupt. On stm32mp1, a second interrupt is required
+boot/dts/vendor/bindings/rtc/st,stm32-rtc.txt:  for rtc alarm wakeup interrupt.
+boot/dts/vendor/bindings/rtc/st,stm32-rtc.txt:  domain (RTC registers) write protection.
+boot/dts/vendor/bindings/rtc/st,stm32-rtc.txt:Optional properties (to override default rtc_ck parent clock on stm32(f4/f7/h7):
+boot/dts/vendor/bindings/rtc/st,stm32-rtc.txt:- assigned-clocks: reference to the rtc_ck clock entry.
+boot/dts/vendor/bindings/rtc/st,stm32-rtc.txt:- assigned-clock-parents: phandle of the new parent clock of rtc_ck.
+boot/dts/vendor/bindings/rtc/st,stm32-rtc.txt:	rtc: rtc@40002800 {
+boot/dts/vendor/bindings/rtc/st,stm32-rtc.txt:		compatible = "st,stm32-rtc";
+boot/dts/vendor/bindings/rtc/st,stm32-rtc.txt:		clocks = <&rcc 1 CLK_RTC>;
+boot/dts/vendor/bindings/rtc/st,stm32-rtc.txt:		assigned-clocks = <&rcc 1 CLK_RTC>;
+boot/dts/vendor/bindings/rtc/st,stm32-rtc.txt:	rtc: rtc@58004000 {
+boot/dts/vendor/bindings/rtc/st,stm32-rtc.txt:		compatible = "st,stm32h7-rtc";
+boot/dts/vendor/bindings/rtc/st,stm32-rtc.txt:		clocks = <&rcc RTCAPB_CK>, <&rcc RTC_CK>;
+boot/dts/vendor/bindings/rtc/st,stm32-rtc.txt:		clock-names = "pclk", "rtc_ck";
+boot/dts/vendor/bindings/rtc/st,stm32-rtc.txt:		assigned-clocks = <&rcc RTC_CK>;
+boot/dts/vendor/bindings/rtc/st,stm32-rtc.txt:	rtc: rtc@5c004000 {
+boot/dts/vendor/bindings/rtc/st,stm32-rtc.txt:		compatible = "st,stm32mp1-rtc";
+boot/dts/vendor/bindings/rtc/st,stm32-rtc.txt:		clocks = <&rcc RTCAPB>, <&rcc RTC>;
+boot/dts/vendor/bindings/rtc/st,stm32-rtc.txt:		clock-names = "pclk", "rtc_ck";
+boot/dts/vendor/bindings/rtc/ingenic,jz4740-rtc.txt:  - "ingenic,jz4740-rtc" - for use with the JZ4740 SoC
+boot/dts/vendor/bindings/rtc/ingenic,jz4740-rtc.txt:  - "ingenic,jz4780-rtc" - for use with the JZ4780 SoC
+boot/dts/vendor/bindings/rtc/ingenic,jz4740-rtc.txt:- reg: Address range of rtc register set
+boot/dts/vendor/bindings/rtc/ingenic,jz4740-rtc.txt:- clocks: phandle to the "rtc" clock
+boot/dts/vendor/bindings/rtc/ingenic,jz4740-rtc.txt:- clock-names: must be "rtc"
+boot/dts/vendor/bindings/rtc/ingenic,jz4740-rtc.txt:  time after wakeup (default 60ms; range 0-125ms if RTC clock
+boot/dts/vendor/bindings/rtc/ingenic,jz4740-rtc.txt:  time (default 100ms; range 0-2s if RTC clock at 32 kHz)
+boot/dts/vendor/bindings/rtc/ingenic,jz4740-rtc.txt:rtc@10003000 {
+boot/dts/vendor/bindings/rtc/ingenic,jz4740-rtc.txt:	compatible = "ingenic,jz4740-rtc";
+boot/dts/vendor/bindings/rtc/ingenic,jz4740-rtc.txt:	clocks = <&rtc_clock>;
+boot/dts/vendor/bindings/rtc/ingenic,jz4740-rtc.txt:	clock-names = "rtc";
+boot/dts/vendor/bindings/rtc/twl-rtc.txt:* Texas Instruments TWL4030/6030 RTC
+boot/dts/vendor/bindings/rtc/twl-rtc.txt:- compatible : Should be "ti,twl4030-rtc"
+boot/dts/vendor/bindings/rtc/twl-rtc.txt:	rtc {
+boot/dts/vendor/bindings/rtc/twl-rtc.txt:		compatible = "ti,twl4030-rtc";
+boot/dts/vendor/bindings/rtc/maxim,mcp795.txt:	mcp795: rtc@0 {
+boot/dts/vendor/bindings/rtc/rtc-meson.txt:* Amlogic Meson6, Meson8, Meson8b and Meson8m2 RTC
+boot/dts/vendor/bindings/rtc/rtc-meson.txt:	* "amlogic,meson6-rtc"
+boot/dts/vendor/bindings/rtc/rtc-meson.txt:	* "amlogic,meson8-rtc"
+boot/dts/vendor/bindings/rtc/rtc-meson.txt:	* "amlogic,meson8b-rtc"
+boot/dts/vendor/bindings/rtc/rtc-meson.txt:	* "amlogic,meson8m2-rtc"
+boot/dts/vendor/bindings/rtc/rtc-meson.txt:- interrupts: the interrupt line of the RTC block.
+boot/dts/vendor/bindings/rtc/rtc-meson.txt:- vdd-supply: reference to the power supply of the RTC block.
+boot/dts/vendor/bindings/rtc/rtc-meson.txt:	rtc: rtc@740 {
+boot/dts/vendor/bindings/rtc/rtc-meson.txt:		compatible = "amlogic,meson6-rtc";
+boot/dts/vendor/bindings/rtc/rtc-meson.txt:		clocks = <&rtc32k_xtal>;
+boot/dts/vendor/bindings/rtc/rtc-meson.txt:		vdd-supply = <&rtc_vdd>;
+boot/dts/vendor/bindings/rtc/rtc-meson.txt:		resets = <&reset RESET_RTC>;
+boot/dts/vendor/bindings/rtc/rtc-m41t80.txt:ST M41T80 family of RTC and compatible
+boot/dts/vendor/bindings/rtc/rtc-m41t80.txt:- interrupts: rtc alarm interrupt.
+boot/dts/vendor/bindings/rtc/rtc-m41t80.txt:	rtc@68 {
+boot/dts/vendor/bindings/rtc/rtc-mxc.txt:RTC controller for the i.MX SoCs
+boot/dts/vendor/bindings/rtc/rtc-mxc.txt:- compatible: Should be "fsl,imx1-rtc" or "fsl,imx21-rtc".
+boot/dts/vendor/bindings/rtc/rtc-mxc.txt:- interrupts: IRQ line for the RTC.
+boot/dts/vendor/bindings/rtc/rtc-mxc.txt:  * one for the the SoC RTC
+boot/dts/vendor/bindings/rtc/rtc-mxc.txt:  * "ipg" for the SoC RTC clock
+boot/dts/vendor/bindings/rtc/rtc-mxc.txt:rtc@10007000 {
+boot/dts/vendor/bindings/rtc/rtc-mxc.txt:	compatible = "fsl,imx21-rtc";
+boot/dts/vendor/bindings/rtc/rtc-mxc.txt:		 <&clks IMX27_CLK_RTC_IPG_GATE>;
+boot/dts/vendor/bindings/rtc/rtc-omap.txt:	- "ti,da830-rtc"  - for RTC IP used similar to that on DA8xx SoC family.
+boot/dts/vendor/bindings/rtc/rtc-omap.txt:	- "ti,am3352-rtc" - for RTC IP used similar to that on AM335x SoC family.
+boot/dts/vendor/bindings/rtc/rtc-omap.txt:			    This RTC IP has special WAKE-EN Register to enable
+boot/dts/vendor/bindings/rtc/rtc-omap.txt:	- "ti,am4372-rtc" - for RTC IP used similar to that on AM437X SoC family.
+boot/dts/vendor/bindings/rtc/rtc-omap.txt:- reg: Address range of rtc register set
+boot/dts/vendor/bindings/rtc/rtc-omap.txt:- interrupts: rtc timer, alarm interrupts in order
+boot/dts/vendor/bindings/rtc/rtc-omap.txt:- system-power-controller: whether the rtc is controlling the system power
+boot/dts/vendor/bindings/rtc/rtc-omap.txt:- clocks: Any internal or external clocks feeding in to rtc
+boot/dts/vendor/bindings/rtc/rtc-omap.txt:rtc@1c23000 {
+boot/dts/vendor/bindings/rtc/rtc-omap.txt:	compatible = "ti,da830-rtc";
+boot/dts/vendor/bindings/rtc/rtc-omap.txt:	clocks = <&clk_32k_rtc>, <&clk_32768_ck>;
+boot/dts/vendor/bindings/rtc/rtc-aspeed.txt:ASPEED BMC RTC
+boot/dts/vendor/bindings/rtc/rtc-aspeed.txt:   * aspeed,ast2400-rtc for the ast2400
+boot/dts/vendor/bindings/rtc/rtc-aspeed.txt:   * aspeed,ast2500-rtc for the ast2500
+boot/dts/vendor/bindings/rtc/rtc-aspeed.txt:   * aspeed,ast2600-rtc for the ast2600
+boot/dts/vendor/bindings/rtc/rtc-aspeed.txt:   rtc@1e781000 {
+boot/dts/vendor/bindings/rtc/rtc-aspeed.txt:           compatible = "aspeed,ast2400-rtc";
+boot/dts/vendor/bindings/rtc/faraday,ftrtc010.txt:* Faraday Technology FTRTC010 Real Time Clock
+boot/dts/vendor/bindings/rtc/faraday,ftrtc010.txt:This RTC appears in for example the Storlink Gemini family of
+boot/dts/vendor/bindings/rtc/faraday,ftrtc010.txt:  "faraday,ftrtc010"
+boot/dts/vendor/bindings/rtc/faraday,ftrtc010.txt:  "cortina,gemini-rtc", "faraday,ftrtc010"
+boot/dts/vendor/bindings/rtc/faraday,ftrtc010.txt:rtc@45000000 {
+boot/dts/vendor/bindings/rtc/faraday,ftrtc010.txt:	compatible = "cortina,gemini-rtc";
+boot/dts/vendor/bindings/rtc/maxim,ds3231.txt:- interrupts: rtc alarm/event interrupt. When this property is selected,
+boot/dts/vendor/bindings/rtc/nxp,rtc-2123.txt:pcf2123: rtc@3 {
+boot/dts/vendor/bindings/rtc/rtc.txt:This file has been moved to rtc.yaml.
+boot/dts/vendor/bindings/rtc/dallas,ds1390.txt:	ds1390: rtc@0 {
+boot/dts/vendor/bindings/rtc/xgene-rtc.txt:RTC controller for the APM X-Gene Real Time Clock
+boot/dts/vendor/bindings/rtc/xgene-rtc.txt:- compatible : Should be "apm,xgene-rtc"
+boot/dts/vendor/bindings/rtc/xgene-rtc.txt:- interrupts: IRQ line for the RTC.
+boot/dts/vendor/bindings/rtc/xgene-rtc.txt:rtcclk: rtcclk {
+boot/dts/vendor/bindings/rtc/xgene-rtc.txt:	clock-output-names = "rtcclk";
+boot/dts/vendor/bindings/rtc/xgene-rtc.txt:rtc: rtc@10510000 {
+boot/dts/vendor/bindings/rtc/xgene-rtc.txt:	compatible = "apm,xgene-rtc";
+boot/dts/vendor/bindings/rtc/xgene-rtc.txt:	clocks = <&rtcclk 0>;
+boot/dts/vendor/bindings/rtc/cdns,rtc.txt:The Cadence RTC controller with date, time and alarm capabilities.
+boot/dts/vendor/bindings/rtc/cdns,rtc.txt:- compatible: Should be "cdns,rtc-r109v3"
+boot/dts/vendor/bindings/rtc/cdns,rtc.txt:        rtc0: rtc@fd080000 {
+boot/dts/vendor/bindings/rtc/cdns,rtc.txt:        	compatible = "cdns,rtc-r109v3";
+boot/dts/vendor/bindings/rtc/spear-rtc.txt:* SPEAr RTC
+boot/dts/vendor/bindings/rtc/spear-rtc.txt:- compatible : "st,spear600-rtc"
+boot/dts/vendor/bindings/rtc/spear-rtc.txt:- reg : Address range of the rtc registers
+boot/dts/vendor/bindings/rtc/spear-rtc.txt:- interrupt: Should contain the rtc interrupt number
+boot/dts/vendor/bindings/rtc/spear-rtc.txt:	rtc@fc000000 {
+boot/dts/vendor/bindings/rtc/spear-rtc.txt:		compatible = "st,spear600-rtc";
+boot/dts/vendor/bindings/rtc/sprd,sc27xx-rtc.txt:- compatible: should be "sprd,sc2731-rtc".
+boot/dts/vendor/bindings/rtc/sprd,sc27xx-rtc.txt:- reg: address offset of rtc register.
+boot/dts/vendor/bindings/rtc/sprd,sc27xx-rtc.txt:- interrupts: rtc alarm interrupt.
+boot/dts/vendor/bindings/rtc/sprd,sc27xx-rtc.txt:		rtc@280 {
+boot/dts/vendor/bindings/rtc/sprd,sc27xx-rtc.txt:			compatible = "sprd,sc2731-rtc";
+boot/dts/vendor/bindings/rtc/rtc-mt7622.txt:Device-Tree bindings for MediaTek SoC based RTC
+boot/dts/vendor/bindings/rtc/rtc-mt7622.txt:			"mediatek,mt7622-rtc", "mediatek,soc-rtc" : for MT7622 SoC
+boot/dts/vendor/bindings/rtc/rtc-mt7622.txt:- interrupts	    : Should contain the interrupt for RTC alarm;
+boot/dts/vendor/bindings/rtc/rtc-mt7622.txt:- clock-names	    : Should contain "rtc" entries
+boot/dts/vendor/bindings/rtc/rtc-mt7622.txt:rtc: rtc@10212800 {
+boot/dts/vendor/bindings/rtc/rtc-mt7622.txt:	compatible = "mediatek,mt7622-rtc",
+boot/dts/vendor/bindings/rtc/rtc-mt7622.txt:		     "mediatek,soc-rtc";
+boot/dts/vendor/bindings/rtc/rtc-mt7622.txt:	clocks = <&topckgen CLK_TOP_RTC>;
+boot/dts/vendor/bindings/rtc/rtc-mt7622.txt:	clock-names = "rtc";
+boot/dts/vendor/bindings/rtc/ti,bq32k.txt:       bq32000: rtc@68 {
+boot/dts/vendor/bindings/rtc/stmp3xxx-rtc.txt:    * "fsl,stmp3xxx-rtc"
+boot/dts/vendor/bindings/rtc/stmp3xxx-rtc.txt:- interrupts: rtc alarm interrupt
+boot/dts/vendor/bindings/rtc/stmp3xxx-rtc.txt:rtc@80056000 {
+boot/dts/vendor/bindings/rtc/stmp3xxx-rtc.txt:	compatible = "fsl,imx28-rtc", "fsl,stmp3xxx-rtc";
+boot/dts/vendor/bindings/rtc/alphascale,asm9260-rtc.txt:- compatible: Should be "alphascale,asm9260-rtc"
+boot/dts/vendor/bindings/rtc/alphascale,asm9260-rtc.txt:- interrupts: IRQ line for the RTC.
+boot/dts/vendor/bindings/rtc/alphascale,asm9260-rtc.txt:  * "ahb" for the SoC RTC clock
+boot/dts/vendor/bindings/rtc/alphascale,asm9260-rtc.txt:rtc0: rtc@800a0000 {
+boot/dts/vendor/bindings/rtc/alphascale,asm9260-rtc.txt:	compatible = "alphascale,asm9260-rtc";
+boot/dts/vendor/bindings/rtc/alphascale,asm9260-rtc.txt:	clocks = <&acc CLKID_AHB_RTC>;
+boot/dts/vendor/bindings/rtc/sirf,prima2-sysrtc.txt:- compatible: must be "sirf,prima2-sysrtc"
+boot/dts/vendor/bindings/rtc/sirf,prima2-sysrtc.txt:- reg: address range of rtc register set.
+boot/dts/vendor/bindings/rtc/sirf,prima2-sysrtc.txt:- interrupts: rtc alarm interrupts.
+boot/dts/vendor/bindings/rtc/sirf,prima2-sysrtc.txt:	rtc@2000 {
+boot/dts/vendor/bindings/rtc/sirf,prima2-sysrtc.txt:		compatible = "sirf,prima2-sysrtc";
+boot/dts/vendor/bindings/rtc/pxa-rtc.txt:* PXA RTC
+boot/dts/vendor/bindings/rtc/pxa-rtc.txt:PXA specific RTC driver.
+boot/dts/vendor/bindings/rtc/pxa-rtc.txt:- compatible : Should be "marvell,pxa-rtc"
+boot/dts/vendor/bindings/rtc/pxa-rtc.txt:rtc@40900000 {
+boot/dts/vendor/bindings/rtc/pxa-rtc.txt:	compatible = "marvell,pxa-rtc";
+boot/dts/vendor/bindings/rtc/atmel,at91sam9-rtc.txt:- atmel,rtt-rtc-time-reg: should encode the GPBR register used to store
+boot/dts/vendor/bindings/rtc/atmel,at91sam9-rtc.txt:	the time base when the RTT is used as an RTC.
+boot/dts/vendor/bindings/rtc/atmel,at91sam9-rtc.txt:	atmel,rtt-rtc-time-reg = <&gpbr 0x0>;
+boot/dts/vendor/bindings/rtc/nxp,pcf85063.txt:pcf85063: rtc@51 {
+boot/dts/vendor/bindings/rtc/rtc-ds1307.txt:Dallas DS1307 and compatible RTC
+boot/dts/vendor/bindings/rtc/rtc-ds1307.txt:- interrupts: rtc alarm interrupt.
+boot/dts/vendor/bindings/rtc/rtc-ds1307.txt:	ds1339: rtc@68 {
+boot/dts/vendor/bindings/rtc/stericsson,coh901331.txt:- reg: address range of rtc register set.
+boot/dts/vendor/bindings/rtc/stericsson,coh901331.txt:- interrupts: rtc alarm interrupt.
+boot/dts/vendor/bindings/rtc/stericsson,coh901331.txt:- clocks: phandle to the rtc clock source
+boot/dts/vendor/bindings/rtc/stericsson,coh901331.txt:	rtc: rtc@c0017000 {
+boot/dts/vendor/bindings/rtc/stericsson,coh901331.txt:		clocks = <&rtc_clk>;

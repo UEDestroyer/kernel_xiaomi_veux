@@ -1180,6 +1180,8 @@ static int icnss_driver_event_register_driver(struct icnss_priv *priv,
 	int ret = 0;
 	int probe_cnt = 0;
 
+	printk(KERN_ERR "VEID: >>> icnss_driver_event_register_driver ENTER\n");
+
 	if (priv->ops)
 		return -EEXIST;
 
@@ -1200,13 +1202,18 @@ static int icnss_driver_event_register_driver(struct icnss_priv *priv,
 		goto out;
 	}
 
+	printk("VEID: FW is good, call icnss_hw_power_on");
+
 	ret = icnss_hw_power_on(priv);
+	printk(KERN_ERR "VEID: icnss_hw_power_on returned %d\n", ret);
 	if (ret)
 		goto out;
 
 	icnss_block_shutdown(true);
 	while (probe_cnt < ICNSS_MAX_PROBE_CNT) {
+		printk(KERN_ERR "VEID: >>> calling priv->ops->probe(), attempt %d\n", probe_cnt);
 		ret = priv->ops->probe(&priv->pdev->dev);
+		printk(KERN_ERR "VEID: <<< priv->ops->probe() returned %d\n", ret);
 		probe_cnt++;
 		if (ret != -EPROBE_DEFER)
 			break;

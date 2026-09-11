@@ -1,0 +1,9 @@
+&L21A {
+    regulator-always-on;
+};
+&L23A {
+    regulator-always-on;
+};
+&L2A {
+    regulator-always-on;
+};

@@ -602,6 +602,9 @@ static int __hdd_soc_probe(struct device *dev,
 	QDF_STATUS status;
 	int errno;
 
+
+	
+	printk(KERN_ERR "VEID: >>> __hdd_soc_probe ENTER\n");
 	hdd_info("probing driver");
 
 	hdd_soc_load_lock(dev);
@@ -609,37 +612,54 @@ static int __hdd_soc_probe(struct device *dev,
 	cds_set_driver_in_bad_state(false);
 	cds_set_recovery_in_progress(false);
 
+	printk(KERN_ERR "VEID: calling hdd_init_qdf_ctx\n");
 	errno = hdd_init_qdf_ctx(dev, bdev, bus_type, bid);
+	printk(KERN_ERR "VEID: hdd_init_qdf_ctx returned %d\n", errno);
 	if (errno)
 		goto unlock;
 
+	
+	printk(KERN_ERR "VEID: calling hdd_init_dma_mask\n");
 	errno = hdd_init_dma_mask(dev, bus_type);
+	printk(KERN_ERR "VEID: hdd_init_dma_mask returned %d\n", errno);
 	if (errno)
 		goto unlock;
 
+	printk(KERN_ERR "VEID: calling hdd_context_create\n");
 	hdd_ctx = hdd_context_create(dev);
+	printk(KERN_ERR "VEID: hdd_context_create returned %s\n",
+	       IS_ERR(hdd_ctx) ? "ERROR" : "OK");
 	if (IS_ERR(hdd_ctx)) {
 		errno = PTR_ERR(hdd_ctx);
 		goto assert_fail_count;
 	}
 
+
+	printk(KERN_ERR "VEID: calling dp_prealloc_init\n");
 	status = dp_prealloc_init((struct cdp_ctrl_objmgr_psoc *)hdd_ctx->psoc);
 
+	printk(KERN_ERR "VEID: dp_prealloc_init returned %d\n", status);
 	if (status != QDF_STATUS_SUCCESS) {
 		errno = qdf_status_to_os_return(status);
 		goto dp_prealloc_fail;
 	}
 
+	printk(KERN_ERR "VEID: calling hdd_wlan_startup\n");
 	errno = hdd_wlan_startup(hdd_ctx);
+	printk(KERN_ERR "VEID: hdd_wlan_startup returned %d\n", errno);
 	if (errno)
 		goto hdd_context_destroy;
 
+	printk(KERN_ERR "VEID: calling hdd_psoc_create_vdevs\n");
 	status = hdd_psoc_create_vdevs(hdd_ctx);
+	printk(KERN_ERR "VEID: hdd_psoc_create_vdevs returned %d\n", status);
 	if (QDF_IS_STATUS_ERROR(status)) {
 		errno = qdf_status_to_os_return(status);
 		goto wlan_exit;
 	}
 
+
+	printk(KERN_ERR "VEID: <<< __hdd_soc_probe SUCCESS\n");
 	probe_fail_cnt = 0;
 	cds_set_driver_loaded(true);
 	cds_set_load_in_progress(false);

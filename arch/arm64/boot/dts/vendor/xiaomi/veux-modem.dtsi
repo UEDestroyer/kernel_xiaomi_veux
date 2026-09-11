@@ -1,0 +1,67 @@
+#include <dt-bindings/clock/qcom,rpmh.h>
+#include <dt-bindings/interrupt-controller/arm-gic.h>
+#include <dt-bindings/interconnect/qcom,holi.h>
+
+&pil_modem {
+    status = "disabled";
+};
+
+&soc {
+    modem_rproc: remoteproc@4080000 {
+        compatible = "qcom,sm6375-pas";
+        reg = <0x0 0x04080000 0x0 0x100>;
+
+        clocks = <&rpmhcc RPMH_CXO_CLK>;
+        clock-names = "xo";
+
+        /* Питание через регуляторы (как у вендора) */
+        vdd_cx-supply = <&VDD_CX_LEVEL>;
+        qcom,vdd_cx-uV-uA = <RPMH_REGULATOR_LEVEL_TURBO 100000>;
+        vdd_mss-supply = <&VDD_MODEM_LEVEL>;
+        qcom,vdd_mss-uV-uA = <RPMH_REGULATOR_LEVEL_TURBO 100000>;
+        qcom,proxy-reg-names = "vdd_cx", "vdd_mss";
+        qcom,proxy-clock-names = "xo";
+
+        qcom,pas-id = <4>;
+        qcom,proxy-timeout-ms = <10000>;
+        qcom,smem-id = <421>;
+        qcom,sysmon-id = <0>;
+        qcom,minidump-id = <3>;
+        qcom,ssctl-instance-id = <0x12>;
+        qcom,firmware-name = "modem";
+        memory-region = <&pil_mpss_wlan_mem>;
+        qcom,signal-aop;
+        qcom,complete-ramdump;
+
+        interconnects = <&mc_virt 3 0 &mc_virt 512 0>;
+        interconnect-names = "memory";
+
+        interrupts-extended = <&intc GIC_SPI 264 IRQ_TYPE_LEVEL_HIGH>,
+                            <&modem_smp2p_in 0 0>,
+                            <&modem_smp2p_in 2 0>,
+                            <&modem_smp2p_in 1 0>,
+                            <&modem_smp2p_in 3 0>,
+                            <&modem_smp2p_in 7 0>;
+
+        interrupt-names = "qcom,wdog",
+                        "qcom,err-fatal",
+                        "qcom,proxy-unvote",
+                        "qcom,err-ready",
+                        "qcom,stop-ack",
+                        "qcom,shutdown-ack";
+
+        qcom,smem-states = <&modem_smp2p_out 0>;
+        qcom,smem-state-names = "qcom,force-stop";
+
+        mboxes = <&qmp_aop 0>;
+        mbox-names = "mss-pil";
+
+        status = "okay";
+
+        glink-edge {
+            interrupts = <GIC_SPI 168 IRQ_TYPE_EDGE_RISING>;
+            label = "modem";
+            qcom,remote-pid = <1>;
+        };
+    };
+};

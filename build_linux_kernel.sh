@@ -144,6 +144,7 @@ set_config "CONFIG_BUILD_ARM64_DT_OVERLAY" "CONFIG_BUILD_ARM64_DT_OVERLAY=n"
 ./scripts/config --file out/.config --enable CONFIG_CGROUP_DEVICE
 ./scripts/config --file out/.config --enable CONFIG_CGROUP_PIDS
 
+./scripts/config --file out/.config --disable CNSS_QCA6750
 
 
 
